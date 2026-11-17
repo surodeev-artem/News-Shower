@@ -13,6 +13,7 @@ class NewsRepositoryImpl implements NewsRepository {
 
   NewsRepositoryImpl(this._newsApi);
 
+  @override
   Stream<GetNewsResult> getNewsByQuery(String query) async* {
     try {
       NewsResponseDto result = await _newsApi.getNewsByQuery(query, 0, 10);
