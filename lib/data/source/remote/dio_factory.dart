@@ -4,6 +4,10 @@ import 'package:news_shower/data/source/remote/api_key_interceptor.dart';
 const String _baseUrl = "https://newsapi.org/v2";
 
 class DioFactory {
+  final ApiKeyInterceptor _apiKeyInterceptor;
+
+  DioFactory(this._apiKeyInterceptor);
+
   Dio create() {
     final dio = Dio(
       BaseOptions(
@@ -12,7 +16,7 @@ class DioFactory {
         receiveTimeout: const Duration(seconds: 10),
       ),
     );
-    dio.interceptors.add(ApiKeyInterceptor());
+    dio.interceptors.add(_apiKeyInterceptor);
     return dio;
   }
 }
