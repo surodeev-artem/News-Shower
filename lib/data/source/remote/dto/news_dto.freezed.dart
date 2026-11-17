@@ -319,7 +319,7 @@ as String?,
 /// @nodoc
 mixin _$ArticleDto implements DiagnosticableTreeMixin {
 
- ArticleSourceDto get source; String get title; String get description; String get publishedAt; String get urlToImage; String get url;
+ String? get title; String? get description; String? get publishedAt; String? get urlToImage; String? get url; ArticleSourceDto? get source;
 /// Create a copy of ArticleDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -334,26 +334,26 @@ void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   final _this = this as ArticleDto;
   properties
     ..add(DiagnosticsProperty('type', 'ArticleDto'))
-    ..add(DiagnosticsProperty('source', _this.source))..add(DiagnosticsProperty('title', _this.title))..add(DiagnosticsProperty('description', _this.description))..add(DiagnosticsProperty('publishedAt', _this.publishedAt))..add(DiagnosticsProperty('urlToImage', _this.urlToImage))..add(DiagnosticsProperty('url', _this.url));
+    ..add(DiagnosticsProperty('title', _this.title))..add(DiagnosticsProperty('description', _this.description))..add(DiagnosticsProperty('publishedAt', _this.publishedAt))..add(DiagnosticsProperty('urlToImage', _this.urlToImage))..add(DiagnosticsProperty('url', _this.url))..add(DiagnosticsProperty('source', _this.source));
 }
 
 @override
 bool operator ==(Object other) {
   final _this = this as ArticleDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ArticleDto&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.publishedAt, _this.publishedAt) || other.publishedAt == _this.publishedAt)&&(identical(other.urlToImage, _this.urlToImage) || other.urlToImage == _this.urlToImage)&&(identical(other.url, _this.url) || other.url == _this.url));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ArticleDto&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.publishedAt, _this.publishedAt) || other.publishedAt == _this.publishedAt)&&(identical(other.urlToImage, _this.urlToImage) || other.urlToImage == _this.urlToImage)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.source, _this.source) || other.source == _this.source));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ArticleDto;
-  return Object.hash(runtimeType,_this.source,_this.title,_this.description,_this.publishedAt,_this.urlToImage,_this.url);
+  return Object.hash(runtimeType,_this.title,_this.description,_this.publishedAt,_this.urlToImage,_this.url,_this.source);
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   final _this = this as ArticleDto;
-  return 'ArticleDto(source: ${_this.source}, title: ${_this.title}, description: ${_this.description}, publishedAt: ${_this.publishedAt}, urlToImage: ${_this.urlToImage}, url: ${_this.url})';
+  return 'ArticleDto(title: ${_this.title}, description: ${_this.description}, publishedAt: ${_this.publishedAt}, urlToImage: ${_this.urlToImage}, url: ${_this.url}, source: ${_this.source})';
 }
 
 
@@ -364,11 +364,11 @@ abstract mixin class $ArticleDtoCopyWith<$Res>  {
   factory $ArticleDtoCopyWith(ArticleDto value, $Res Function(ArticleDto) _then) = _$ArticleDtoCopyWithImpl;
 @useResult
 $Res call({
- ArticleSourceDto source, String title, String description, String publishedAt, String urlToImage, String url
+ String? title, String? description, String? publishedAt, String? urlToImage, String? url, ArticleSourceDto? source
 });
 
 
-$ArticleSourceDtoCopyWith<$Res> get source;
+$ArticleSourceDtoCopyWith<$Res>? get source;
 
 }
 /// @nodoc
@@ -381,24 +381,27 @@ class _$ArticleDtoCopyWithImpl<$Res>
 
 /// Create a copy of ArticleDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? source = null,Object? title = null,Object? description = null,Object? publishedAt = null,Object? urlToImage = null,Object? url = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = freezed,Object? description = freezed,Object? publishedAt = freezed,Object? urlToImage = freezed,Object? url = freezed,Object? source = freezed,}) {
   return _then(ArticleDto(
-source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
-as ArticleSourceDto,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,publishedAt: null == publishedAt ? _self.publishedAt : publishedAt // ignore: cast_nullable_to_non_nullable
-as String,urlToImage: null == urlToImage ? _self.urlToImage : urlToImage // ignore: cast_nullable_to_non_nullable
-as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String,
+title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,publishedAt: freezed == publishedAt ? _self.publishedAt : publishedAt // ignore: cast_nullable_to_non_nullable
+as String?,urlToImage: freezed == urlToImage ? _self.urlToImage : urlToImage // ignore: cast_nullable_to_non_nullable
+as String?,url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,source: freezed == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as ArticleSourceDto?,
   ));
 }
 /// Create a copy of ArticleDto
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$ArticleSourceDtoCopyWith<$Res> get source {
-  
-  return $ArticleSourceDtoCopyWith<$Res>(_self.source, (value) {
+$ArticleSourceDtoCopyWith<$Res>? get source {
+    if (_self.source == null) {
+    return null;
+  }
+
+  return $ArticleSourceDtoCopyWith<$Res>(_self.source!, (value) {
     return _then(_self.copyWith(source: value));
   });
 }
@@ -483,10 +486,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ArticleSourceDto source,  String title,  String description,  String publishedAt,  String urlToImage,  String url)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? title,  String? description,  String? publishedAt,  String? urlToImage,  String? url,  ArticleSourceDto? source)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ArticleDto() when $default != null:
-return $default(_that.source,_that.title,_that.description,_that.publishedAt,_that.urlToImage,_that.url);case _:
+return $default(_that.title,_that.description,_that.publishedAt,_that.urlToImage,_that.url,_that.source);case _:
   return orElse();
 
 }
@@ -504,10 +507,10 @@ return $default(_that.source,_that.title,_that.description,_that.publishedAt,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ArticleSourceDto source,  String title,  String description,  String publishedAt,  String urlToImage,  String url)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? title,  String? description,  String? publishedAt,  String? urlToImage,  String? url,  ArticleSourceDto? source)  $default,) {final _that = this;
 switch (_that) {
 case _ArticleDto():
-return $default(_that.source,_that.title,_that.description,_that.publishedAt,_that.urlToImage,_that.url);case _:
+return $default(_that.title,_that.description,_that.publishedAt,_that.urlToImage,_that.url,_that.source);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -524,10 +527,10 @@ return $default(_that.source,_that.title,_that.description,_that.publishedAt,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ArticleSourceDto source,  String title,  String description,  String publishedAt,  String urlToImage,  String url)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? title,  String? description,  String? publishedAt,  String? urlToImage,  String? url,  ArticleSourceDto? source)?  $default,) {final _that = this;
 switch (_that) {
 case _ArticleDto() when $default != null:
-return $default(_that.source,_that.title,_that.description,_that.publishedAt,_that.urlToImage,_that.url);case _:
+return $default(_that.title,_that.description,_that.publishedAt,_that.urlToImage,_that.url,_that.source);case _:
   return null;
 
 }
@@ -539,15 +542,15 @@ return $default(_that.source,_that.title,_that.description,_that.publishedAt,_th
 @JsonSerializable()
 
 class _ArticleDto with DiagnosticableTreeMixin implements ArticleDto {
-  const _ArticleDto({required this.source, required this.title, required this.description, required this.publishedAt, required this.urlToImage, required this.url});
+  const _ArticleDto({this.title, this.description, this.publishedAt, this.urlToImage, this.url, this.source});
   factory _ArticleDto.fromJson(Map<String, dynamic> json) => _$ArticleDtoFromJson(json);
 
-@override final  ArticleSourceDto source;
-@override final  String title;
-@override final  String description;
-@override final  String publishedAt;
-@override final  String urlToImage;
-@override final  String url;
+@override final  String? title;
+@override final  String? description;
+@override final  String? publishedAt;
+@override final  String? urlToImage;
+@override final  String? url;
+@override final  ArticleSourceDto? source;
 
 /// Create a copy of ArticleDto
 /// with the given fields replaced by the non-null parameter values.
@@ -563,23 +566,23 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
     ..add(DiagnosticsProperty('type', 'ArticleDto'))
-    ..add(DiagnosticsProperty('source', source))..add(DiagnosticsProperty('title', title))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('publishedAt', publishedAt))..add(DiagnosticsProperty('urlToImage', urlToImage))..add(DiagnosticsProperty('url', url));
+    ..add(DiagnosticsProperty('title', title))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('publishedAt', publishedAt))..add(DiagnosticsProperty('urlToImage', urlToImage))..add(DiagnosticsProperty('url', url))..add(DiagnosticsProperty('source', source));
 }
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ArticleDto&&(identical(other.source, source) || other.source == source)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.urlToImage, urlToImage) || other.urlToImage == urlToImage)&&(identical(other.url, url) || other.url == url));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ArticleDto&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.urlToImage, urlToImage) || other.urlToImage == urlToImage)&&(identical(other.url, url) || other.url == url)&&(identical(other.source, source) || other.source == source));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,source,title,description,publishedAt,urlToImage,url);
+    return Object.hash(runtimeType,title,description,publishedAt,urlToImage,url,source);
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-    return 'ArticleDto(source: $source, title: $title, description: $description, publishedAt: $publishedAt, urlToImage: $urlToImage, url: $url)';
+    return 'ArticleDto(title: $title, description: $description, publishedAt: $publishedAt, urlToImage: $urlToImage, url: $url, source: $source)';
 }
 
 
@@ -590,11 +593,11 @@ abstract mixin class _$ArticleDtoCopyWith<$Res> implements $ArticleDtoCopyWith<$
   factory _$ArticleDtoCopyWith(_ArticleDto value, $Res Function(_ArticleDto) _then) = __$ArticleDtoCopyWithImpl;
 @override @useResult
 $Res call({
- ArticleSourceDto source, String title, String description, String publishedAt, String urlToImage, String url
+ String? title, String? description, String? publishedAt, String? urlToImage, String? url, ArticleSourceDto? source
 });
 
 
-@override $ArticleSourceDtoCopyWith<$Res> get source;
+@override $ArticleSourceDtoCopyWith<$Res>? get source;
 
 }
 /// @nodoc
@@ -607,15 +610,15 @@ class __$ArticleDtoCopyWithImpl<$Res>
 
 /// Create a copy of ArticleDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? source = null,Object? title = null,Object? description = null,Object? publishedAt = null,Object? urlToImage = null,Object? url = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? title = freezed,Object? description = freezed,Object? publishedAt = freezed,Object? urlToImage = freezed,Object? url = freezed,Object? source = freezed,}) {
   return _then(_ArticleDto(
-source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
-as ArticleSourceDto,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,publishedAt: null == publishedAt ? _self.publishedAt : publishedAt // ignore: cast_nullable_to_non_nullable
-as String,urlToImage: null == urlToImage ? _self.urlToImage : urlToImage // ignore: cast_nullable_to_non_nullable
-as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String,
+title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,publishedAt: freezed == publishedAt ? _self.publishedAt : publishedAt // ignore: cast_nullable_to_non_nullable
+as String?,urlToImage: freezed == urlToImage ? _self.urlToImage : urlToImage // ignore: cast_nullable_to_non_nullable
+as String?,url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,source: freezed == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as ArticleSourceDto?,
   ));
 }
 
@@ -623,9 +626,12 @@ as String,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$ArticleSourceDtoCopyWith<$Res> get source {
-  
-  return $ArticleSourceDtoCopyWith<$Res>(_self.source, (value) {
+$ArticleSourceDtoCopyWith<$Res>? get source {
+    if (_self.source == null) {
+    return null;
+  }
+
+  return $ArticleSourceDtoCopyWith<$Res>(_self.source!, (value) {
     return _then(_self.copyWith(source: value));
   });
 }

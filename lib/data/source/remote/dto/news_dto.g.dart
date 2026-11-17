@@ -27,22 +27,24 @@ Map<String, dynamic> _$NewsResponseDtoToJson(_NewsResponseDto instance) =>
     };
 
 _ArticleDto _$ArticleDtoFromJson(Map<String, dynamic> json) => _ArticleDto(
-  source: ArticleSourceDto.fromJson(json['source'] as Map<String, dynamic>),
-  title: json['title'] as String,
-  description: json['description'] as String,
-  publishedAt: json['publishedAt'] as String,
-  urlToImage: json['urlToImage'] as String,
-  url: json['url'] as String,
+  title: json['title'] as String?,
+  description: json['description'] as String?,
+  publishedAt: json['publishedAt'] as String?,
+  urlToImage: json['urlToImage'] as String?,
+  url: json['url'] as String?,
+  source: json['source'] == null
+      ? null
+      : ArticleSourceDto.fromJson(json['source'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$ArticleDtoToJson(_ArticleDto instance) =>
     <String, dynamic>{
-      'source': instance.source,
       'title': instance.title,
       'description': instance.description,
       'publishedAt': instance.publishedAt,
       'urlToImage': instance.urlToImage,
       'url': instance.url,
+      'source': instance.source,
     };
 
 _ArticleSourceDto _$ArticleSourceDtoFromJson(Map<String, dynamic> json) =>

@@ -23,12 +23,12 @@ abstract class NewsResponseDto with _$NewsResponseDto {
 @freezed
 abstract class ArticleDto with _$ArticleDto {
   const factory ArticleDto({
-    required ArticleSourceDto source,
-    required String title,
-    required String description,
-    required String publishedAt,
-    required String urlToImage,
-    required String url,
+    String? title,
+    String? description,
+    String? publishedAt,
+    String? urlToImage,
+    String? url,
+    ArticleSourceDto? source,
   }) = _ArticleDto;
 
   factory ArticleDto.fromJson(Map<String, dynamic> json) =>
