@@ -28,7 +28,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
   @override
   void initState() {
     super.initState();
-    _controller = NewsListController(AppInjector.resolve(), widget.query);
+    _controller = AppInjector.resolve(param1: widget.query);
     _shimmer = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
