@@ -65,29 +65,31 @@ final class _NewsListScreenState extends State<NewsListScreen>
 
   Widget _failure({required NewsListError error}) {
     return SizedBox.expand(
-      child: Column(
-        children: switch (error) {
-          NewsListErrorRateLimited() => [
-            Text(context.l10n.errorTooManyRequest),
-            _retryButton(onPressed: () => _controller.load()),
-          ],
-          NewsListErrorApiKeyDisabled() => [
-            Text(context.l10n.errorApiKeyDisabled),
-          ],
-          NewsListErrorApiKeyExhausted() => [
-            Text(context.l10n.errorApiKeyExhausted),
-          ],
-          NewsListErrorApiKeyInvalid() => [
-            Text(context.l10n.errorApiKeyInvalid),
-          ],
-          NewsListErrorApiKeyMissing() => [
-            Text(context.l10n.errorApiKeyMissing),
-          ],
-          NewsListErrorUnexpected() => [
-            Text(context.l10n.errorUnexpected),
-            _retryButton(onPressed: () => _controller.load()),
-          ],
-        },
+      child: Center(
+        child: Column(
+          children: switch (error) {
+            NewsListErrorRateLimited() => [
+              Text(context.l10n.errorTooManyRequest),
+              _retryButton(onPressed: () => _controller.load()),
+            ],
+            NewsListErrorApiKeyDisabled() => [
+              Text(context.l10n.errorApiKeyDisabled),
+            ],
+            NewsListErrorApiKeyExhausted() => [
+              Text(context.l10n.errorApiKeyExhausted),
+            ],
+            NewsListErrorApiKeyInvalid() => [
+              Text(context.l10n.errorApiKeyInvalid),
+            ],
+            NewsListErrorApiKeyMissing() => [
+              Text(context.l10n.errorApiKeyMissing),
+            ],
+            NewsListErrorUnexpected() => [
+              Text(context.l10n.errorUnexpected),
+              _retryButton(onPressed: () => _controller.load()),
+            ],
+          },
+        ),
       ),
     );
   }
