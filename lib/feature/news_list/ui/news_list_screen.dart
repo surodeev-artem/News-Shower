@@ -230,6 +230,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
   @override
   void dispose() {
     _shimmer.stop();
+    _controller.dispose();
     super.dispose();
   }
 }
