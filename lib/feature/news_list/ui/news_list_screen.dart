@@ -133,8 +133,6 @@ final class _NewsListScreenState extends State<NewsListScreen>
               const imageSide = 128.0;
               const gap = 16.0;
               final hasImage = imageUrl != null;
-              final textWidth =
-                  constraints.maxWidth - (hasImage ? imageSide + gap : 0);
 
               final cacheSide =
                   (imageSide * MediaQuery.devicePixelRatioOf(context)).round();
