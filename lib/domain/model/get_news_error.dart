@@ -5,7 +5,7 @@ sealed class GetNewsError {
   factory GetNewsError.apiKeyDisabled() => GetNewsResultApiKeyDisabledError();
   factory GetNewsError.apiKeyExhausted() => GetNewsResultApiKeyExhaustedError();
   factory GetNewsError.apiKeyInvalid() => GetNewsResultApiKeyInvalidError();
-  factory GetNewsError.apiKeyMissing() => GetNewsResultApiKeyInvalidError();
+  factory GetNewsError.apiKeyMissing() => GetNewsResultApiKeyMissingError();
   factory GetNewsError.unexpected() => GetNewsResultUnexpectedError();
 }
 
