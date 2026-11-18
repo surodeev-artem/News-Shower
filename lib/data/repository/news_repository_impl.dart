@@ -45,6 +45,8 @@ class NewsRepositoryImpl implements NewsRepository {
       } else {
         yield GetNewsResult.failure(GetNewsError.unexpected());
       }
+    } catch (e) {
+      yield GetNewsResult.failure(GetNewsError.unexpected());
     }
   }
 
