@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:news_shower/feature/news_search/ui/news_search_screen.dart';
+import 'package:news_shower/navigation/app_routes.dart';
+import 'package:news_shower/navigation/routes_generator.dart';
 
 class NewShowerApp extends StatelessWidget {
   const NewShowerApp({super.key});
@@ -9,7 +10,8 @@ class NewShowerApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: NewsSearchScreen(),
+      initialRoute: AppRoutes.search,
+      onGenerateRoute: RoutesGenerator.generate,
     );
   }
 }
