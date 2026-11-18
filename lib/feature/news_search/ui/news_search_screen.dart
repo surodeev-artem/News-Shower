@@ -26,33 +26,33 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListenableBuilder(
-        listenable: _controller,
-        builder: (context, _) => Center(
-          child: Padding(
-            padding: EdgeInsetsGeometry.symmetric(horizontal: 32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  context.l10n.searchTitle,
-                  style: Theme.of(context).textTheme.titleLarge,
+      body: Center(
+        child: Padding(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                context.l10n.searchTitle,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Padding(padding: EdgeInsetsGeometry.only(top: 16)),
+              TextField(
+                controller: _textEditingController,
+                decoration: InputDecoration(
+                  labelText: context.l10n.queryPlaceholder,
+                  border: OutlineInputBorder(),
                 ),
-                Padding(padding: EdgeInsetsGeometry.only(top: 16)),
-                TextField(
-                  controller: _textEditingController,
-                  decoration: InputDecoration(
-                    labelText: context.l10n.queryPlaceholder,
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) => {
-                    _controller.onSearchQueryChanged(value),
-                  },
-                ),
-                Padding(padding: EdgeInsetsGeometry.only(top: 8)),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
+                onChanged: (value) {
+                  _controller.onSearchQueryChanged(value);
+                },
+              ),
+              Padding(padding: EdgeInsetsGeometry.only(top: 8)),
+              SizedBox(
+                width: double.infinity,
+                child: ListenableBuilder(
+                  listenable: _controller,
+                  builder: (_, _) => FilledButton(
                     onPressed: _controller.state.isSearchButtonEnabled
                         ? () {
                             Navigator.of(context).pushNamed(
@@ -66,8 +66,8 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
                     child: Text(context.l10n.searchButton),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
