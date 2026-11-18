@@ -5,7 +5,7 @@ class NewsSearchController extends ChangeNotifier {
   NewsSearchState state = NewsSearchState(isSearchButtonEnabled: false);
 
   void onSearchQueryChanged(String query) {
-    state = state.copyWith(isSearchButtonEnabled: query.isNotEmpty);
+    state = state.copyWith(isSearchButtonEnabled: query.trim().isNotEmpty);
     notifyListeners();
   }
 }
