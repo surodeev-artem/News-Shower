@@ -32,8 +32,8 @@ abstract final class AppInjector {
   }
 
   static void _registerUi() {
-    _getIt.registerFactoryParam<NewsController, String, void>(
-      ((query, _) => NewsController(_getIt(), query)),
+    _getIt.registerFactoryParam<NewsListController, String, void>(
+      ((query, _) => NewsListController(_getIt(), query)),
     );
   }
 }

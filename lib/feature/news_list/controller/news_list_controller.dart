@@ -8,7 +8,7 @@ import 'package:news_shower/feature/news_list/controller/news_list.dart';
 import 'package:news_shower/feature/news_list/controller/news_list_error.dart';
 import 'package:news_shower/feature/news_list/controller/news_list_state.dart';
 
-class NewsController extends ChangeNotifier {
+class NewsListController extends ChangeNotifier {
   final NewsRepository _newsRepository;
   final String _query;
 
@@ -16,7 +16,7 @@ class NewsController extends ChangeNotifier {
 
   NewsListState state = NewsListState.loading();
 
-  NewsController(this._newsRepository, this._query) {
+  NewsListController(this._newsRepository, this._query) {
     load();
   }
 
