@@ -106,7 +106,10 @@ final class _NewsListScreenState extends State<NewsListScreen>
   }
 
   Widget _retryButton({required VoidCallback onPressed}) {
-    return FilledButton(onPressed: onPressed, child: Text("Попробовать снова"));
+    return FilledButton(
+      onPressed: onPressed,
+      child: Text(context.l10n.errorButton),
+    );
   }
 
   Widget _article({required Article article}) {
