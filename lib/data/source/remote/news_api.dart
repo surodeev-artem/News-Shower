@@ -13,7 +13,12 @@ class NewsApi {
   ) async {
     final response = await _dio.get<Map<String, dynamic>>(
       '/everything',
-      queryParameters: {"q": query, "pageSize": pageSize, "page": pageIndex},
+      queryParameters: {
+        'q': query,
+        'pageSize': pageSize,
+        'page': pageIndex,
+        'sortBy': 'publishedAt',
+      },
     );
     final data = response.data;
     if (data == null) {
