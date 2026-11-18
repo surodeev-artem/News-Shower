@@ -58,7 +58,9 @@ final class _NewsListScreenState extends State<NewsListScreen>
   }
 
   Widget _emptyList() {
-    return SizedBox.expand(child: Center(child: Text("Новостей не найдено")));
+    return SizedBox.expand(
+      child: Center(child: Text(context.l10n.newsNotFound)),
+    );
   }
 
   Widget _failure({required NewsListError error}) {
