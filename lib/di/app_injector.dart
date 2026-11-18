@@ -5,10 +5,10 @@ import 'package:news_shower/data/source/remote/api_key_interceptor.dart';
 import 'package:news_shower/data/source/remote/dio_factory.dart';
 import 'package:news_shower/data/source/remote/news_api.dart';
 import 'package:news_shower/domain/repository/news_repository.dart';
-import 'package:news_shower/feature/main/controller/news_list_controller.dart';
+import 'package:news_shower/feature/news_list/controller/news_list_controller.dart';
 
 abstract final class AppInjector {
-  static final GetIt _getIt = GetIt.instance();
+  static final GetIt _getIt = GetIt.instance;
 
   static void init() {
     _registerData();
