@@ -70,6 +70,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
           children: switch (error) {
             NewsListErrorRateLimited() => [
               Text(context.l10n.errorTooManyRequest),
+              const SizedBox(height: 8),
               _retryButton(onPressed: () => _controller.load()),
             ],
             NewsListErrorApiKeyDisabled() => [
@@ -86,6 +87,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
             ],
             NewsListErrorUnexpected() => [
               Text(context.l10n.errorUnexpected),
+              const SizedBox(height: 8),
               _retryButton(onPressed: () => _controller.load()),
             ],
           },
