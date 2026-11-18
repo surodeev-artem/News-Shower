@@ -166,8 +166,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
                       ),
                       const SizedBox(width: gap),
                     ],
-                    SizedBox(
-                      width: textWidth,
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
