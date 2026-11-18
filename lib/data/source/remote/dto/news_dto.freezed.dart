@@ -641,7 +641,7 @@ $ArticleSourceDtoCopyWith<$Res>? get source {
 /// @nodoc
 mixin _$ArticleSourceDto implements DiagnosticableTreeMixin {
 
- String? get id; String? get name;
+ String? get name;
 /// Create a copy of ArticleSourceDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -656,26 +656,26 @@ void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   final _this = this as ArticleSourceDto;
   properties
     ..add(DiagnosticsProperty('type', 'ArticleSourceDto'))
-    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('name', _this.name));
+    ..add(DiagnosticsProperty('name', _this.name));
 }
 
 @override
 bool operator ==(Object other) {
   final _this = this as ArticleSourceDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ArticleSourceDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ArticleSourceDto&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ArticleSourceDto;
-  return Object.hash(runtimeType,_this.id,_this.name);
+  return Object.hash(runtimeType,_this.name);
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   final _this = this as ArticleSourceDto;
-  return 'ArticleSourceDto(id: ${_this.id}, name: ${_this.name})';
+  return 'ArticleSourceDto(name: ${_this.name})';
 }
 
 
@@ -686,7 +686,7 @@ abstract mixin class $ArticleSourceDtoCopyWith<$Res>  {
   factory $ArticleSourceDtoCopyWith(ArticleSourceDto value, $Res Function(ArticleSourceDto) _then) = _$ArticleSourceDtoCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? name
+ String? name
 });
 
 
@@ -703,10 +703,9 @@ class _$ArticleSourceDtoCopyWithImpl<$Res>
 
 /// Create a copy of ArticleSourceDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,}) {
   return _then(ArticleSourceDto(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -792,10 +791,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? name)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ArticleSourceDto() when $default != null:
-return $default(_that.id,_that.name);case _:
+return $default(_that.name);case _:
   return orElse();
 
 }
@@ -813,10 +812,10 @@ return $default(_that.id,_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? name)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name)  $default,) {final _that = this;
 switch (_that) {
 case _ArticleSourceDto():
-return $default(_that.id,_that.name);case _:
+return $default(_that.name);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -833,10 +832,10 @@ return $default(_that.id,_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? name)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name)?  $default,) {final _that = this;
 switch (_that) {
 case _ArticleSourceDto() when $default != null:
-return $default(_that.id,_that.name);case _:
+return $default(_that.name);case _:
   return null;
 
 }
@@ -848,10 +847,9 @@ return $default(_that.id,_that.name);case _:
 @JsonSerializable()
 
 class _ArticleSourceDto with DiagnosticableTreeMixin implements ArticleSourceDto {
-  const _ArticleSourceDto({this.id, this.name});
+  const _ArticleSourceDto({this.name});
   factory _ArticleSourceDto.fromJson(Map<String, dynamic> json) => _$ArticleSourceDtoFromJson(json);
 
-@override final  String? id;
 @override final  String? name;
 
 /// Create a copy of ArticleSourceDto
@@ -868,23 +866,23 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
     ..add(DiagnosticsProperty('type', 'ArticleSourceDto'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name));
+    ..add(DiagnosticsProperty('name', name));
 }
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ArticleSourceDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ArticleSourceDto&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,name);
+    return Object.hash(runtimeType,name);
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-    return 'ArticleSourceDto(id: $id, name: $name)';
+    return 'ArticleSourceDto(name: $name)';
 }
 
 
@@ -895,7 +893,7 @@ abstract mixin class _$ArticleSourceDtoCopyWith<$Res> implements $ArticleSourceD
   factory _$ArticleSourceDtoCopyWith(_ArticleSourceDto value, $Res Function(_ArticleSourceDto) _then) = __$ArticleSourceDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? name
+ String? name
 });
 
 
@@ -912,10 +910,9 @@ class __$ArticleSourceDtoCopyWithImpl<$Res>
 
 /// Create a copy of ArticleSourceDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? name = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,}) {
   return _then(_ArticleSourceDto(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

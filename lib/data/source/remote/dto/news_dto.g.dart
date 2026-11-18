@@ -48,7 +48,7 @@ Map<String, dynamic> _$ArticleDtoToJson(_ArticleDto instance) =>
     };
 
 _ArticleSourceDto _$ArticleSourceDtoFromJson(Map<String, dynamic> json) =>
-    _ArticleSourceDto(id: json['id'] as String?, name: json['name'] as String?);
+    _ArticleSourceDto(name: json['name'] as String?);
 
 Map<String, dynamic> _$ArticleSourceDtoToJson(_ArticleSourceDto instance) =>
-    <String, dynamic>{'id': instance.id, 'name': instance.name};
+    <String, dynamic>{'name': instance.name};

@@ -37,8 +37,7 @@ abstract class ArticleDto with _$ArticleDto {
 
 @freezed
 abstract class ArticleSourceDto with _$ArticleSourceDto {
-  const factory ArticleSourceDto({String? id, String? name}) =
-      _ArticleSourceDto;
+  const factory ArticleSourceDto({String? name}) = _ArticleSourceDto;
 
   factory ArticleSourceDto.fromJson(Map<String, dynamic> json) =>
       _$ArticleSourceDtoFromJson(json);
