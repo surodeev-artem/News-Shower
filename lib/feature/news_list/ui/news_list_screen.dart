@@ -38,6 +38,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text(widget.query)),
       body: ListenableBuilder(
         listenable: _controller,
         builder: (_, _) {
@@ -97,13 +98,18 @@ final class _NewsListScreenState extends State<NewsListScreen>
   }
 
   Widget _success({required NewsList newsList}) {
-    final topInset = MediaQuery.paddingOf(context).top;
     final bottomInset = MediaQuery.paddingOf(context).bottom;
+    final padding = 8.0;
 
     return SizedBox.expand(
       child: ListView.builder(
         itemCount: newsList.news.length,
-        padding: EdgeInsets.fromLTRB(8, topInset + 8, 8, bottomInset + 8),
+        padding: EdgeInsets.fromLTRB(
+          padding,
+          padding,
+          padding,
+          bottomInset + padding,
+        ),
         itemBuilder: (_, index) => _article(article: newsList.news[index]),
       ),
     );
@@ -196,6 +202,8 @@ final class _NewsListScreenState extends State<NewsListScreen>
                                 Text(
                                   description,
                                   style: Theme.of(context).textTheme.bodySmall,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 4,
                                 ),
                             ],
                           ),
