@@ -9,5 +9,15 @@
     "errorApiKeyExhausted": "Достигнут лимит запросов для этого ключа API",
     "errorApiKeyInvalid": "Некорректный ключ API",
     "errorApiKeyMissing": "Отсутствует ключ API",
-    "errorUnexpected": "Произошла ошибка"
+    "errorUnexpected": "Произошла ошибка",
+    "publishedAt": "{date}",
+    "@publishedAt": {
+        "placeholders": {
+            "date": {
+                "type": "DateTime",
+                "format": "dd.MM.yyyy HH:mm",
+                "isCustomDateFormat": true
+            }
+        }
+    }
 }

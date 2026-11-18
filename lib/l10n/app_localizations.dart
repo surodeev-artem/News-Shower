@@ -163,6 +163,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong'**
   String get errorUnexpected;
+
+  /// No description provided for @publishedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'{date}'**
+  String publishedAt(DateTime date);
 }
 
 class _AppLocalizationsDelegate

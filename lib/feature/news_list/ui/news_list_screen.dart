@@ -117,7 +117,10 @@ final class _NewsListScreenState extends State<NewsListScreen>
     String? title = article.title;
     String? description = article.description;
     String? source = article.source;
-    String? publishedAt = _formatPublishedAt(article.publishedAt);
+    DateTime? publishedAt = article.publishedAt;
+    String? publishedAtFormatted = publishedAt != null
+        ? context.l10n.publishedAt(publishedAt)
+        : null;
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -195,10 +198,10 @@ final class _NewsListScreenState extends State<NewsListScreen>
                                 ),
                             ],
                           ),
-                          if (publishedAt != null) ...[
+                          if (publishedAtFormatted != null) ...[
                             const SizedBox(height: 8),
                             Text(
-                              publishedAt,
+                              publishedAtFormatted,
                               style: Theme.of(context).textTheme.labelSmall,
                             ),
                           ],
@@ -213,16 +216,6 @@ final class _NewsListScreenState extends State<NewsListScreen>
         ),
       ),
     );
-  }
-
-  String? _formatPublishedAt(DateTime? date) {
-    if (date == null) return null;
-    final local = date.toLocal();
-    final day = local.day.toString().padLeft(2, '0');
-    final month = local.month.toString().padLeft(2, '0');
-    final hour = local.hour.toString().padLeft(2, '0');
-    final minute = local.minute.toString().padLeft(2, '0');
-    return '$day.$month.${local.year} $hour:$minute';
   }
 
   Future<void> _openInBrowser(String? rawUrl) async {

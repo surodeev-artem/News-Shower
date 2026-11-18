@@ -41,4 +41,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorUnexpected => 'Something went wrong';
+
+  @override
+  String publishedAt(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat(
+      'MMM d, y HH:mm',
+      localeName,
+    );
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString';
+  }
 }

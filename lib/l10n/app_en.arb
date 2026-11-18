@@ -9,5 +9,15 @@
     "errorApiKeyExhausted": "Request limit reached for this API key",
     "errorApiKeyInvalid": "Invalid API key",
     "errorApiKeyMissing": "API key is missing",
-    "errorUnexpected": "Something went wrong"
+    "errorUnexpected": "Something went wrong",
+    "publishedAt": "{date}",
+    "@publishedAt": {
+        "placeholders": {
+            "date": {
+                "type": "DateTime",
+                "format": "MMM d, y HH:mm",
+                "isCustomDateFormat": true
+            }
+        }
+    }
 }

@@ -42,4 +42,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorUnexpected => 'Произошла ошибка';
+
+  @override
+  String publishedAt(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat(
+      'dd.MM.yyyy HH:mm',
+      localeName,
+    );
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString';
+  }
 }
