@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:news_shower/common/app_localizations_ext.dart';
 import 'package:news_shower/feature/news_search/controller/news_search_controller.dart';
+import 'package:news_shower/feature/news_search/controller/news_search_effect.dart';
 import 'package:news_shower/navigation/app_routes.dart';
 
 class NewsSearchScreen extends StatefulWidget {
@@ -13,6 +16,7 @@ class NewsSearchScreen extends StatefulWidget {
 }
 
 class _NewsSearchScreenState extends State<NewsSearchScreen> {
+  late final StreamSubscription<NewsSearchEffect> _effects;
   late final TextEditingController _textEditingController;
   late final NewsSearchController _controller;
 
@@ -21,6 +25,7 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
     super.initState();
     _textEditingController = TextEditingController();
     _controller = NewsSearchController();
+    _effects = _controller.effect.listen(_onEffect);
   }
 
   @override
@@ -43,9 +48,10 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
                   labelText: context.l10n.queryPlaceholder,
                   border: OutlineInputBorder(),
                 ),
-                onChanged: (value) {
-                  _controller.onSearchQueryChanged(value);
-                },
+                onChanged: (value) => _controller.onSearchQueryChanged(value),
+                textInputAction: TextInputAction.search,
+                onSubmitted: (value) =>
+                    _controller.onSearchButtonPressed(value),
               ),
               Padding(padding: EdgeInsetsGeometry.only(top: 8)),
               SizedBox(
@@ -55,11 +61,8 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
                   builder: (_, _) => FilledButton(
                     onPressed: _controller.state.isSearchButtonEnabled
                         ? () {
-                            Navigator.of(context).pushNamed(
-                              AppRoutes.newsList,
-                              arguments: NewsListArgs(
-                                query: _textEditingController.text,
-                              ),
+                            _controller.onSearchButtonPressed(
+                              _textEditingController.text,
                             );
                           }
                         : null,
@@ -74,10 +77,20 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
     );
   }
 
+  void _onEffect(NewsSearchEffect effect) {
+    switch (effect) {
+      case NewsSearchEffectGoToList(:final query):
+        Navigator.of(
+          context,
+        ).pushNamed(AppRoutes.newsList, arguments: NewsListArgs(query: query));
+    }
+  }
+
   @override
   void dispose() {
     _textEditingController.dispose();
     _controller.dispose();
+    _effects.cancel();
     super.dispose();
   }
 }
