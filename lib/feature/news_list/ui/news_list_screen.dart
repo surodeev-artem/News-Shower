@@ -223,7 +223,11 @@ final class _NewsListScreenState extends State<NewsListScreen>
     if (url == null || url.isEmpty) return;
     final uri = Uri.tryParse(url);
     if (uri == null || !uri.hasScheme) return;
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      return;
+    }
   }
 
   @override
