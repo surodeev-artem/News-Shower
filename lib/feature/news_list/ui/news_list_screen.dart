@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:news_shower/common/app_localizations_ext.dart';
 import 'package:news_shower/common/shimmer_box.dart';
 import 'package:news_shower/di/app_injector.dart';
 import 'package:news_shower/feature/news_list/controller/news_list.dart';
@@ -65,17 +66,23 @@ final class _NewsListScreenState extends State<NewsListScreen>
       child: Column(
         children: switch (error) {
           NewsListErrorRateLimited() => [
-            Text("Слишком много запросов, попробуйте позже"),
+            Text(context.l10n.errorTooManyRequest),
             _retryButton(onPressed: () => _controller.load()),
           ],
-          NewsListErrorApiKeyDisabled() => [Text("Выключен ключ API")],
-          NewsListErrorApiKeyExhausted() => [
-            Text("Закончился лимит запросов для этого ключа API"),
+          NewsListErrorApiKeyDisabled() => [
+            Text(context.l10n.errorApiKeyDisabled),
           ],
-          NewsListErrorApiKeyInvalid() => [Text("Некорректный ключ API")],
-          NewsListErrorApiKeyMissing() => [Text("Отсутствует ключ API")],
+          NewsListErrorApiKeyExhausted() => [
+            Text(context.l10n.errorApiKeyExhausted),
+          ],
+          NewsListErrorApiKeyInvalid() => [
+            Text(context.l10n.errorApiKeyInvalid),
+          ],
+          NewsListErrorApiKeyMissing() => [
+            Text(context.l10n.errorApiKeyMissing),
+          ],
           NewsListErrorUnexpected() => [
-            Text("Произошла ошибка"),
+            Text(context.l10n.errorUnexpected),
             _retryButton(onPressed: () => _controller.load()),
           ],
         },

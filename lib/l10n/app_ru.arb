@@ -1,0 +1,13 @@
+{
+    "searchTitle": "Поиск",
+    "queryPlaceholder": "Ваш запрос...",
+    "searchButton": "Найти",
+    "newsNotFound": "Новостей не найдено",
+    "errorButton": "Попробовать снова",
+    "errorTooManyRequest": "Слишком много запросов, попробуйте позже",
+    "errorApiKeyDisabled": "Выключен ключ API",
+    "errorApiKeyExhausted": "Достигнут лимит запросов для этого ключа API",
+    "errorApiKeyInvalid": "Некорректный ключ API",
+    "errorApiKeyMissing": "Отсутствует ключ API",
+    "errorUnexpected": "Произошла ошибка"
+}

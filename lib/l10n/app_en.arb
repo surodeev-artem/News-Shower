@@ -1,0 +1,13 @@
+{
+    "searchTitle": "Search",
+    "queryPlaceholder": "Your query...",
+    "searchButton": "Find",
+    "newsNotFound": "News not found",
+    "errorButton": "Try again",
+    "errorTooManyRequest": "Too many requests, please try again later",
+    "errorApiKeyDisabled": "API key is disabled",
+    "errorApiKeyExhausted": "Request limit reached for this API key",
+    "errorApiKeyInvalid": "Invalid API key",
+    "errorApiKeyMissing": "API key is missing",
+    "errorUnexpected": "Something went wrong"
+}

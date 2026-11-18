@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:news_shower/common/app_localizations_ext.dart';
 import 'package:news_shower/feature/news_search/controller/news_search_controller.dart';
 import 'package:news_shower/navigation/app_routes.dart';
 
@@ -33,12 +34,15 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Поиск", style: Theme.of(context).textTheme.titleLarge),
+                Text(
+                  context.l10n.searchTitle,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
                 Padding(padding: EdgeInsetsGeometry.only(top: 16)),
                 TextField(
                   controller: _textEditingController,
-                  decoration: const InputDecoration(
-                    labelText: 'Запрос',
+                  decoration: InputDecoration(
+                    labelText: context.l10n.queryPlaceholder,
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (value) => {
@@ -59,7 +63,7 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
                             );
                           }
                         : null,
-                    child: Text("Найти"),
+                    child: Text(context.l10n.searchButton),
                   ),
                 ),
               ],
