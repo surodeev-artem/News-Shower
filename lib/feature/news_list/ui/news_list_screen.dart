@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:news_shower/common/app_localizations_ext.dart';
 import 'package:news_shower/common/shimmer_box.dart';
@@ -60,7 +61,12 @@ final class _NewsListScreenState extends State<NewsListScreen>
 
   Widget _emptyList() {
     return SizedBox.expand(
-      child: Center(child: Text(context.l10n.newsNotFound)),
+      child: Center(
+        child: Text(
+          context.l10n.newsNotFound,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      ),
     );
   }
 
@@ -70,24 +76,42 @@ final class _NewsListScreenState extends State<NewsListScreen>
         child: Column(
           children: switch (error) {
             NewsListErrorRateLimited() => [
-              Text(context.l10n.errorTooManyRequest),
+              Text(
+                context.l10n.errorTooManyRequest,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
               const SizedBox(height: 8),
               _retryButton(onPressed: () => _controller.load()),
             ],
             NewsListErrorApiKeyDisabled() => [
-              Text(context.l10n.errorApiKeyDisabled),
+              Text(
+                context.l10n.errorApiKeyDisabled,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
             ],
             NewsListErrorApiKeyExhausted() => [
-              Text(context.l10n.errorApiKeyExhausted),
+              Text(
+                context.l10n.errorApiKeyExhausted,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
             ],
             NewsListErrorApiKeyInvalid() => [
-              Text(context.l10n.errorApiKeyInvalid),
+              Text(
+                context.l10n.errorApiKeyInvalid,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
             ],
             NewsListErrorApiKeyMissing() => [
-              Text(context.l10n.errorApiKeyMissing),
+              Text(
+                context.l10n.errorApiKeyMissing,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
             ],
             NewsListErrorUnexpected() => [
-              Text(context.l10n.errorUnexpected),
+              Text(
+                context.l10n.errorUnexpected,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
               const SizedBox(height: 8),
               _retryButton(onPressed: () => _controller.load()),
             ],
@@ -168,7 +192,13 @@ final class _NewsListScreenState extends State<NewsListScreen>
                               height: imageSide,
                               animation: _shimmer,
                             ),
-                            errorWidget: (_, _, _) => SizedBox(),
+                            errorWidget: (_, _, _) => Center(
+                              child: SvgPicture.asset(
+                                'assets/icon/ic_not_found.svg',
+                                width: 64,
+                                height: 64,
+                              ),
+                            ),
                           ),
                         ),
                       ),
