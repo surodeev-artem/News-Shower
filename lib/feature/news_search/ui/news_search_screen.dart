@@ -10,7 +10,7 @@ class NewsSearchScreen extends StatefulWidget {
   const NewsSearchScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() {
+  State<NewsSearchScreen> createState() {
     return _NewsSearchScreenState();
   }
 }
@@ -33,7 +33,7 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 32),
+          padding: const EdgeInsetsGeometry.symmetric(horizontal: 32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -41,19 +41,19 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
                 context.l10n.searchTitle,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              Padding(padding: EdgeInsetsGeometry.only(top: 16)),
+              const SizedBox(height: 16),
               TextField(
                 controller: _textEditingController,
                 decoration: InputDecoration(
                   labelText: context.l10n.queryPlaceholder,
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
                 onChanged: (value) => _controller.onSearchQueryChanged(value),
                 textInputAction: TextInputAction.search,
                 onSubmitted: (value) =>
                     _controller.onSearchButtonPressed(value),
               ),
-              Padding(padding: EdgeInsetsGeometry.only(top: 8)),
+              const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 child: ListenableBuilder(

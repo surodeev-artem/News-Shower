@@ -14,7 +14,7 @@ part of 'news_dto.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$NewsResponseDto implements DiagnosticableTreeMixin {
+mixin _$NewsResponseDto {
 
  String get status; int? get totalResults; List<ArticleDto>? get articles; String? get code; String? get message;
 /// Create a copy of NewsResponseDto
@@ -26,13 +26,6 @@ $NewsResponseDtoCopyWith<NewsResponseDto> get copyWith => _$NewsResponseDtoCopyW
   /// Serializes this NewsResponseDto to a JSON map.
   Map<String, dynamic> toJson();
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  final _this = this as NewsResponseDto;
-  properties
-    ..add(DiagnosticsProperty('type', 'NewsResponseDto'))
-    ..add(DiagnosticsProperty('status', _this.status))..add(DiagnosticsProperty('totalResults', _this.totalResults))..add(DiagnosticsProperty('articles', _this.articles))..add(DiagnosticsProperty('code', _this.code))..add(DiagnosticsProperty('message', _this.message));
-}
 
 @override
 bool operator ==(Object other) {
@@ -48,7 +41,7 @@ int get hashCode {
 }
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   final _this = this as NewsResponseDto;
   return 'NewsResponseDto(status: ${_this.status}, totalResults: ${_this.totalResults}, articles: ${_this.articles}, code: ${_this.code}, message: ${_this.message})';
 }
@@ -225,7 +218,7 @@ return $default(_that.status,_that.totalResults,_that.articles,_that.code,_that.
 /// @nodoc
 @JsonSerializable()
 
-class _NewsResponseDto with DiagnosticableTreeMixin implements NewsResponseDto {
+class _NewsResponseDto implements NewsResponseDto {
   const _NewsResponseDto({required this.status, this.totalResults,  List<ArticleDto>? articles, this.code, this.message}): _articles = articles;
   factory _NewsResponseDto.fromJson(Map<String, dynamic> json) => _$NewsResponseDtoFromJson(json);
 
@@ -253,12 +246,6 @@ _$NewsResponseDtoCopyWith<_NewsResponseDto> get copyWith => __$NewsResponseDtoCo
 Map<String, dynamic> toJson() {
   return _$NewsResponseDtoToJson(this, );
 }
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties
-    ..add(DiagnosticsProperty('type', 'NewsResponseDto'))
-    ..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('totalResults', totalResults))..add(DiagnosticsProperty('articles', articles))..add(DiagnosticsProperty('code', code))..add(DiagnosticsProperty('message', message));
-}
 
 @override
 bool operator ==(Object other) {
@@ -272,7 +259,7 @@ int get hashCode {
 }
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
     return 'NewsResponseDto(status: $status, totalResults: $totalResults, articles: $articles, code: $code, message: $message)';
 }
 
@@ -317,7 +304,7 @@ as String?,
 
 
 /// @nodoc
-mixin _$ArticleDto implements DiagnosticableTreeMixin {
+mixin _$ArticleDto {
 
  String? get title; String? get description; String? get publishedAt; String? get urlToImage; String? get url; ArticleSourceDto? get source;
 /// Create a copy of ArticleDto
@@ -329,13 +316,6 @@ $ArticleDtoCopyWith<ArticleDto> get copyWith => _$ArticleDtoCopyWithImpl<Article
   /// Serializes this ArticleDto to a JSON map.
   Map<String, dynamic> toJson();
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  final _this = this as ArticleDto;
-  properties
-    ..add(DiagnosticsProperty('type', 'ArticleDto'))
-    ..add(DiagnosticsProperty('title', _this.title))..add(DiagnosticsProperty('description', _this.description))..add(DiagnosticsProperty('publishedAt', _this.publishedAt))..add(DiagnosticsProperty('urlToImage', _this.urlToImage))..add(DiagnosticsProperty('url', _this.url))..add(DiagnosticsProperty('source', _this.source));
-}
 
 @override
 bool operator ==(Object other) {
@@ -351,7 +331,7 @@ int get hashCode {
 }
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   final _this = this as ArticleDto;
   return 'ArticleDto(title: ${_this.title}, description: ${_this.description}, publishedAt: ${_this.publishedAt}, urlToImage: ${_this.urlToImage}, url: ${_this.url}, source: ${_this.source})';
 }
@@ -541,7 +521,7 @@ return $default(_that.title,_that.description,_that.publishedAt,_that.urlToImage
 /// @nodoc
 @JsonSerializable()
 
-class _ArticleDto with DiagnosticableTreeMixin implements ArticleDto {
+class _ArticleDto implements ArticleDto {
   const _ArticleDto({this.title, this.description, this.publishedAt, this.urlToImage, this.url, this.source});
   factory _ArticleDto.fromJson(Map<String, dynamic> json) => _$ArticleDtoFromJson(json);
 
@@ -562,12 +542,6 @@ _$ArticleDtoCopyWith<_ArticleDto> get copyWith => __$ArticleDtoCopyWithImpl<_Art
 Map<String, dynamic> toJson() {
   return _$ArticleDtoToJson(this, );
 }
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties
-    ..add(DiagnosticsProperty('type', 'ArticleDto'))
-    ..add(DiagnosticsProperty('title', title))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('publishedAt', publishedAt))..add(DiagnosticsProperty('urlToImage', urlToImage))..add(DiagnosticsProperty('url', url))..add(DiagnosticsProperty('source', source));
-}
 
 @override
 bool operator ==(Object other) {
@@ -581,7 +555,7 @@ int get hashCode {
 }
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
     return 'ArticleDto(title: $title, description: $description, publishedAt: $publishedAt, urlToImage: $urlToImage, url: $url, source: $source)';
 }
 
@@ -639,7 +613,7 @@ $ArticleSourceDtoCopyWith<$Res>? get source {
 
 
 /// @nodoc
-mixin _$ArticleSourceDto implements DiagnosticableTreeMixin {
+mixin _$ArticleSourceDto {
 
  String? get name;
 /// Create a copy of ArticleSourceDto
@@ -651,13 +625,6 @@ $ArticleSourceDtoCopyWith<ArticleSourceDto> get copyWith => _$ArticleSourceDtoCo
   /// Serializes this ArticleSourceDto to a JSON map.
   Map<String, dynamic> toJson();
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  final _this = this as ArticleSourceDto;
-  properties
-    ..add(DiagnosticsProperty('type', 'ArticleSourceDto'))
-    ..add(DiagnosticsProperty('name', _this.name));
-}
 
 @override
 bool operator ==(Object other) {
@@ -673,7 +640,7 @@ int get hashCode {
 }
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   final _this = this as ArticleSourceDto;
   return 'ArticleSourceDto(name: ${_this.name})';
 }
@@ -846,7 +813,7 @@ return $default(_that.name);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _ArticleSourceDto with DiagnosticableTreeMixin implements ArticleSourceDto {
+class _ArticleSourceDto implements ArticleSourceDto {
   const _ArticleSourceDto({this.name});
   factory _ArticleSourceDto.fromJson(Map<String, dynamic> json) => _$ArticleSourceDtoFromJson(json);
 
@@ -862,12 +829,6 @@ _$ArticleSourceDtoCopyWith<_ArticleSourceDto> get copyWith => __$ArticleSourceDt
 Map<String, dynamic> toJson() {
   return _$ArticleSourceDtoToJson(this, );
 }
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties
-    ..add(DiagnosticsProperty('type', 'ArticleSourceDto'))
-    ..add(DiagnosticsProperty('name', name));
-}
 
 @override
 bool operator ==(Object other) {
@@ -881,7 +842,7 @@ int get hashCode {
 }
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
     return 'ArticleSourceDto(name: $name)';
 }
 

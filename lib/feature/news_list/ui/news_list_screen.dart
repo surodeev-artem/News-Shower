@@ -16,7 +16,7 @@ final class NewsListScreen extends StatefulWidget {
   const NewsListScreen({super.key, required this.query});
 
   @override
-  State<StatefulWidget> createState() {
+  State<NewsListScreen> createState() {
     return _NewsListScreenState();
   }
 }
@@ -56,7 +56,9 @@ final class _NewsListScreenState extends State<NewsListScreen>
   }
 
   Widget _loading() {
-    return SizedBox.expand(child: Center(child: CircularProgressIndicator()));
+    return const SizedBox.expand(
+      child: Center(child: CircularProgressIndicator()),
+    );
   }
 
   Widget _emptyList() {

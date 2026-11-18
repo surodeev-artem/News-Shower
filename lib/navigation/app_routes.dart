@@ -1,6 +1,6 @@
 abstract final class AppRoutes {
-  static const search = "/";
-  static const newsList = "/news";
+  static const search = '/';
+  static const newsList = '/news';
 }
 
 class NewsListArgs {

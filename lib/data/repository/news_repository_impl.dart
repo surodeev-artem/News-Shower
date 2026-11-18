@@ -34,7 +34,7 @@ class NewsRepositoryImpl implements NewsRepository {
                     newsItem.source?.name,
                   );
                 }).toList() ??
-                List.empty(),
+                const [],
           ),
         );
       } else {

@@ -7,7 +7,7 @@ import 'package:news_shower/feature/news_search/controller/news_search_state.dar
 class NewsSearchController extends ChangeNotifier {
   final _effectController = StreamController<NewsSearchEffect>();
 
-  NewsSearchState state = NewsSearchState(isSearchButtonEnabled: false);
+  NewsSearchState state = const NewsSearchState(isSearchButtonEnabled: false);
   late final Stream<NewsSearchEffect> effect = _effectController.stream;
 
   void onSearchQueryChanged(String query) {
