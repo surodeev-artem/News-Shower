@@ -1,18 +1,18 @@
 final class NewsModel {
-  final List<NewsItemModel> news;
+  final List<ArticleModel> articles;
 
-  const NewsModel(this.news);
+  const NewsModel(this.articles);
 }
 
-final class NewsItemModel {
+final class ArticleModel {
   final String? title;
   final String? description;
-  final String? publishedAt;
+  final DateTime? publishedAt;
   final String? urlToImage;
   final String? url;
   final String? source;
 
-  const NewsItemModel(
+  const ArticleModel(
     this.title,
     this.description,
     this.publishedAt,

@@ -16,41 +16,46 @@ class NewsRepositoryImpl implements NewsRepository {
   @override
   Stream<GetNewsResult> getNewsByQuery(String query) async* {
     try {
-      NewsResponseDto result = await _newsApi.getNewsByQuery(query, 0, 10);
+      NewsResponseDto result = await _newsApi.getNewsByQuery(query, 1, 10);
       if (result.status == _responseStatusOk) {
         yield GetNewsResult.success(
           NewsModel(
-            result.articles
-                    ?.map(
-                      (newsItem) => NewsItemModel(
-                        newsItem.title,
-                        newsItem.description,
-                        newsItem.publishedAt,
-                        newsItem.urlToImage,
-                        newsItem.url,
-                        newsItem.title,
-                      ),
-                    )
-                    .toList() ??
+            result.articles?.map((newsItem) {
+                  return ArticleModel(
+                    newsItem.title,
+                    newsItem.description,
+                    _parsePublishedAt(newsItem.publishedAt),
+                    newsItem.urlToImage,
+                    newsItem.url,
+                    newsItem.source?.name,
+                  );
+                }).toList() ??
                 List.empty(),
           ),
         );
       } else {
-        yield GetNewsResult.failure(parseError(result));
+        yield GetNewsResult.failure(_parseError(result));
       }
     } on DioException catch (e) {
       if (e.response?.data is Map) {
         final result = NewsResponseDto.fromJson(
           Map<String, dynamic>.from(e.response?.data),
         );
-        yield GetNewsResult.failure(parseError(result));
+        yield GetNewsResult.failure(_parseError(result));
       } else {
         yield GetNewsResult.failure(GetNewsError.unexpected());
       }
     }
   }
 
-  GetNewsError parseError(NewsResponseDto response) {
+  DateTime? _parsePublishedAt(String? value) {
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+    return DateTime.tryParse(value);
+  }
+
+  GetNewsError _parseError(NewsResponseDto response) {
     return switch (response.code) {
       'apiKeyDisabled' => GetNewsError.apiKeyDisabled(),
       'apiKeyExhausted' => GetNewsError.apiKeyExhausted(),

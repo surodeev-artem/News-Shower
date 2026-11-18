@@ -7,7 +7,7 @@ final class NewsList {
 final class Article {
   final String? title;
   final String? description;
-  final String? publishedAt;
+  final DateTime? publishedAt;
   final String? urlToImage;
   final String? url;
   final String? source;

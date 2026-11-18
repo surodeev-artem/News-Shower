@@ -12,7 +12,7 @@ class NewsListController extends ChangeNotifier {
   final NewsRepository _newsRepository;
   final String _query;
 
-  StreamSubscription<GetNewsResult>? subscription;
+  StreamSubscription<GetNewsResult>? _subscription;
 
   NewsListState state = NewsListState.loading();
 
@@ -21,18 +21,23 @@ class NewsListController extends ChangeNotifier {
   }
 
   void load() {
-    subscription?.cancel();
-    subscription = _newsRepository.getNewsByQuery(_query).listen((resultModel) {
+    state = NewsListState.loading();
+    notifyListeners();
+
+    _subscription?.cancel();
+    _subscription = _newsRepository.getNewsByQuery(_query).listen((
+      resultModel,
+    ) {
       switch (resultModel) {
         case GetNewsResultSuccess():
           {
-            if (resultModel.news.news.isEmpty) {
+            if (resultModel.news.articles.isEmpty) {
               state = NewsListState.empty();
 
               break;
             }
             final result = NewsList(
-              resultModel.news.news
+              resultModel.news.articles
                   .map(
                     (article) => Article(
                       article.title,
@@ -46,7 +51,6 @@ class NewsListController extends ChangeNotifier {
                   .toList(),
             );
             state = NewsListState.success(result);
-
             break;
           }
         case GetNewsResultFailure():
@@ -82,7 +86,7 @@ class NewsListController extends ChangeNotifier {
 
   @override
   void dispose() {
-    subscription?.cancel();
+    _subscription?.cancel();
     super.dispose();
   }
 }
