@@ -2,7 +2,7 @@ import 'package:dio/src/cancel_token.dart';
 import 'package:news_shower/data/source/remote/dto/news_response_dto.dart';
 import 'package:news_shower/data/source/remote/news_api.dart';
 
-class NewsApiFake extends NewsApi {
+final class NewsApiFake extends NewsApi {
   final Future<NewsResponseDto> Function() _result;
   String? query;
   CancelToken? cancelToken;

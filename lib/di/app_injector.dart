@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:news_shower/common/domain/external_browser_link_launcher.dart';
+import 'package:news_shower/common/domain/link_launcher.dart';
 import 'package:news_shower/data/repository/news_repository_impl.dart';
 import 'package:news_shower/data/source/remote/api_key_interceptor.dart';
 import 'package:news_shower/data/source/remote/dio_factory.dart';
@@ -24,7 +26,6 @@ abstract final class AppInjector {
   static void _registerData() {
     _getIt.registerLazySingleton<ApiKeyInterceptor>(() => ApiKeyInterceptor());
     _getIt.registerLazySingleton<Dio>(() => DioFactory(_getIt()).create());
-    _getIt.registerLazySingleton<NewsApiImpl>(() => NewsApiImpl(_getIt()));
     _getIt.registerLazySingleton<NewsApi>(() => NewsApiImpl(_getIt()));
   }
 
@@ -32,11 +33,14 @@ abstract final class AppInjector {
     _getIt.registerLazySingleton<NewsRepository>(
       () => NewsRepositoryImpl(_getIt()),
     );
+    _getIt.registerLazySingleton<LinkLauncher>(
+      () => ExternalBrowserLinkLauncher(),
+    );
   }
 
   static void _registerUi() {
     _getIt.registerFactoryParam<NewsListController, String, void>(
-      ((query, _) => NewsListController(_getIt(), query)),
+      ((query, _) => NewsListController(_getIt(), _getIt(), query)),
     );
 
     _getIt.registerFactory<NewsSearchController>(() => NewsSearchController());

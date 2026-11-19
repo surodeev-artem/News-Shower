@@ -1,0 +1,523 @@
+import 'dart:async';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:news_shower/domain/model/article_model.dart';
+import 'package:news_shower/domain/model/get_news_error.dart';
+import 'package:news_shower/domain/model/get_news_result.dart';
+import 'package:news_shower/feature/news_list/controller/model/article_model_mapper.dart';
+import 'package:news_shower/feature/news_list/controller/model/get_news_error_mapper.dart';
+import 'package:news_shower/feature/news_list/controller/model/news_list_effect.dart';
+import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
+import 'package:news_shower/feature/news_list/controller/model/news_list_state.dart';
+import 'package:news_shower/feature/news_list/controller/news_list_controller.dart';
+
+import '../../../common/domain/link_launcher_fake.dart';
+import '../../../data/repository/news_repository_fake.dart';
+
+void main() {
+  test('State is NewsListStateInit before first loading', () {
+    final repository = NewsRepositoryFake(const []);
+    final linkLauncher = LinkLauncherFake(() async => true);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    expect(controller.state, const NewsListState.init());
+
+    addTearDown(() => controller.dispose());
+  });
+
+  test('State is NewsListStateEmpty after first empty loading data', () async {
+    final repository = NewsRepositoryFake(const [
+      GetNewsResult.success(articles: []),
+    ]);
+    final linkLauncher = LinkLauncherFake(() async => true);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    final firstNotLoadingStateNotifier = _waitUntil(
+      controller,
+      (state) => state is! NewsListStateLoading && state is! NewsListStateInit,
+    );
+    controller.load();
+
+    await firstNotLoadingStateNotifier;
+    expect(controller.state, const NewsListState.empty());
+
+    addTearDown(() => controller.dispose());
+  });
+
+  test(
+    'State is NewsListStateFailure after first failure loading data',
+    () async {
+      final response = const GetNewsResult.failure(
+        error: GetNewsError.apiKeyMissing(),
+      );
+      final repository = NewsRepositoryFake([response]);
+      final linkLauncher = LinkLauncherFake(() async => true);
+      final controller = NewsListController(repository, linkLauncher, '');
+
+      final firstNotLoadingStateNotifier = _waitUntil(
+        controller,
+        (state) =>
+            state is! NewsListStateLoading && state is! NewsListStateInit,
+      );
+      controller.load();
+
+      await firstNotLoadingStateNotifier;
+
+      expect(
+        controller.state,
+        NewsListState.failure(
+          error: GetNewsErrorMapper.map(
+            (response as GetNewsResultFailure).error,
+          ),
+        ),
+      );
+
+      addTearDown(() => controller.dispose());
+    },
+  );
+
+  test('State is NewsListStateData with articles and paging data after first non empty loading data', () async {
+    final response = GetNewsResult.success(
+      articles: List.filled(20, const ArticleModel(title: 'Title')),
+    );
+    final repository = NewsRepositoryFake([response]);
+    final linkLauncher = LinkLauncherFake(() async => true);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    final firstNotLoadingStateNotifier = _waitUntil(
+      controller,
+      (state) => state is! NewsListStateLoading && state is! NewsListStateInit,
+    );
+    controller.load();
+
+    await firstNotLoadingStateNotifier;
+
+    expect(controller.state, isA<NewsListStateData>());
+    final state = controller.state as NewsListStateData;
+    expect(
+      state.articles,
+      (response as GetNewsResultSuccess).articles
+          .map(ArticleModelMapper.map)
+          .toList(),
+    );
+    expect(state.page, 1);
+    expect(state.hasReachedEnd, false);
+    expect(state.isLoadingMore, false);
+    expect(state.loadMoreError, isNull);
+
+    addTearDown(() => controller.dispose());
+  });
+
+  test('State is NewsListStateData loading with articles and paging data after second loading', () async {
+    final firstResponse = GetNewsResult.success(
+      articles: List.filled(20, const ArticleModel(title: 'Title first')),
+    );
+    final secondResponse = GetNewsResult.success(
+      articles: List.filled(20, const ArticleModel(title: 'Title second')),
+    );
+    final responses = [firstResponse, secondResponse];
+    final repository = NewsRepositoryFake(responses);
+    final linkLauncher = LinkLauncherFake(() async => true);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    final firstNotLoadingStateNotifier = _waitUntil(
+      controller,
+      (state) => state is! NewsListStateLoading && state is! NewsListStateInit,
+    );
+    controller.load();
+
+    await firstNotLoadingStateNotifier;
+
+    final secondLoadingStateNotifier = _waitUntil(
+      controller,
+      (state) => state is NewsListStateData && state.isLoadingMore,
+    );
+    controller.load();
+
+    await secondLoadingStateNotifier;
+
+    expect(controller.state, isA<NewsListStateData>());
+    final state = controller.state as NewsListStateData;
+    expect(
+      state.articles,
+      (responses[0] as GetNewsResultSuccess).articles
+          .map(ArticleModelMapper.map)
+          .toList(),
+    );
+    expect(state.page, 1);
+    expect(state.hasReachedEnd, false);
+    expect(state.isLoadingMore, true);
+    expect(state.loadMoreError, isNull);
+
+    addTearDown(() => controller.dispose());
+  });
+
+  test('State is NewsListStateData failure with articles and paging data after second failure loading', () async {
+    final firstResponse = GetNewsResult.success(
+      articles: List.filled(20, const ArticleModel(title: 'Title first')),
+    );
+    final secondResponse = const GetNewsResult.failure(
+      error: GetNewsError.apiKeyDisabled(),
+    );
+    final responses = [firstResponse, secondResponse];
+    final repository = NewsRepositoryFake(responses);
+    final linkLauncher = LinkLauncherFake(() async => true);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    final firstNotLoadingStateNotifier = _waitUntil(
+      controller,
+      (state) => state is! NewsListStateLoading && state is! NewsListStateInit,
+    );
+    controller.load();
+
+    await firstNotLoadingStateNotifier;
+
+    final secondFailureStateNotifier = _waitUntil(
+      controller,
+      (state) => state is NewsListStateData && state.loadMoreError != null,
+    );
+    controller.load();
+
+    await secondFailureStateNotifier;
+
+    expect(controller.state, isA<NewsListStateData>());
+    final state = controller.state as NewsListStateData;
+    expect(
+      state.articles,
+      (responses[0] as GetNewsResultSuccess).articles
+          .map(ArticleModelMapper.map)
+          .toList(),
+    );
+    expect(state.page, 1);
+    expect(state.hasReachedEnd, false);
+    expect(state.isLoadingMore, false);
+    expect(state.loadMoreError, const NewsListError.apiKeyDisabled());
+
+    addTearDown(() => controller.dispose());
+  });
+
+  test('State is NewsListStateData failure with articles and paging data after second failure with maximumResultsReached loading', () async {
+    final firstResponse = GetNewsResult.success(
+      articles: List.filled(20, const ArticleModel(title: 'Title first')),
+    );
+    final secondResponse = const GetNewsResult.failure(
+      error: GetNewsError.maximumResultsReached(),
+    );
+    final responses = [firstResponse, secondResponse];
+    final repository = NewsRepositoryFake(responses);
+    final linkLauncher = LinkLauncherFake(() async => true);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    final firstNotLoadingStateNotifier = _waitUntil(
+      controller,
+      (state) => state is! NewsListStateLoading && state is! NewsListStateInit,
+    );
+    controller.load();
+
+    await firstNotLoadingStateNotifier;
+
+    final secondFailureStateNotifier = _waitUntil(
+      controller,
+      (state) => state is NewsListStateData && state.loadMoreError != null,
+    );
+    controller.load();
+
+    await secondFailureStateNotifier;
+
+    expect(controller.state, isA<NewsListStateData>());
+    final state = controller.state as NewsListStateData;
+    expect(
+      state.articles,
+      (responses[0] as GetNewsResultSuccess).articles
+          .map(ArticleModelMapper.map)
+          .toList(),
+    );
+    expect(state.page, 1);
+    expect(state.hasReachedEnd, true);
+    expect(state.isLoadingMore, false);
+    expect(state.loadMoreError, const NewsListError.maximumResultsReached());
+
+    addTearDown(() => controller.dispose());
+  });
+
+  test('State is NewsListStateData hasReachedEnd with articles and paging data after second not fully loading', () async {
+    final firstResponse = GetNewsResult.success(
+      articles: List.filled(20, const ArticleModel(title: 'Title first')),
+    );
+    final secondResponse = GetNewsResult.success(
+      articles: List.filled(10, const ArticleModel(title: 'Title second')),
+    );
+    final responses = [firstResponse, secondResponse];
+    final repository = NewsRepositoryFake(responses);
+    final linkLauncher = LinkLauncherFake(() async => true);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    final firstNotLoadingStateNotifier = _waitUntil(
+      controller,
+      (state) => state is! NewsListStateLoading && state is! NewsListStateInit,
+    );
+    controller.load();
+
+    await firstNotLoadingStateNotifier;
+
+    final secondFailureStateNotifier = _waitUntil(
+      controller,
+      (state) =>
+          state is NewsListStateData && state.page == 2 && !state.isLoadingMore,
+    );
+    controller.load();
+
+    await secondFailureStateNotifier;
+
+    expect(controller.state, isA<NewsListStateData>());
+    final state = controller.state as NewsListStateData;
+    expect(
+      state.articles,
+      responses
+          .map(
+            (response) => (response as GetNewsResultSuccess).articles
+                .map(ArticleModelMapper.map)
+                .toList(),
+          )
+          .expand((response) => response)
+          .toList(),
+    );
+    expect(state.page, 2);
+    expect(state.hasReachedEnd, true);
+    expect(state.isLoadingMore, false);
+    expect(state.loadMoreError, null);
+
+    addTearDown(() => controller.dispose());
+  });
+
+  test('State is NewsListStateData with articles and paging data after second non empty loading', () async {
+    final firstResponse = GetNewsResult.success(
+      articles: List.filled(20, const ArticleModel(title: 'Title first')),
+    );
+    final secondResponse = GetNewsResult.success(
+      articles: List.filled(20, const ArticleModel(title: 'Title second')),
+    );
+    final responses = [firstResponse, secondResponse];
+    final repository = NewsRepositoryFake(responses);
+    final linkLauncher = LinkLauncherFake(() async => true);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    final firstNotLoadingStateNotifier = _waitUntil(
+      controller,
+      (state) => state is! NewsListStateLoading && state is! NewsListStateInit,
+    );
+    controller.load();
+
+    await firstNotLoadingStateNotifier;
+
+    final secondNotLoadingStateNotifier = _waitUntil(
+      controller,
+      (state) => state is NewsListStateData && !state.isLoadingMore,
+    );
+    controller.load();
+
+    await secondNotLoadingStateNotifier;
+
+    expect(controller.state, isA<NewsListStateData>());
+    final state = controller.state as NewsListStateData;
+    expect(
+      state.articles,
+      responses
+          .map(
+            (response) => (response as GetNewsResultSuccess).articles
+                .map(ArticleModelMapper.map)
+                .toList(),
+          )
+          .expand((response) => response)
+          .toList(),
+    );
+    expect(state.page, 2);
+    expect(state.hasReachedEnd, false);
+    expect(state.isLoadingMore, false);
+    expect(state.loadMoreError, isNull);
+
+    addTearDown(() => controller.dispose());
+  });
+
+  test('Double loading calls only single repository call', () async {
+    final firstResponse = GetNewsResult.success(
+      articles: List.filled(20, const ArticleModel(title: 'Title first')),
+    );
+    final secondResponse = GetNewsResult.success(
+      articles: List.filled(20, const ArticleModel(title: 'Title second')),
+    );
+    final responses = [firstResponse, secondResponse];
+    final repository = NewsRepositoryFake(responses);
+    final linkLauncher = LinkLauncherFake(() async => true);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    final firstNotLoadingStateNotifier = _waitUntil(
+      controller,
+      (state) => state is! NewsListStateLoading && state is! NewsListStateInit,
+    );
+    controller.load();
+    controller.load();
+
+    await firstNotLoadingStateNotifier;
+
+    await pumpEventQueue();
+    expect(controller.state, isA<NewsListStateData>());
+    final state = controller.state as NewsListStateData;
+    expect(
+      state.articles,
+      (responses[0] as GetNewsResultSuccess).articles
+          .map(ArticleModelMapper.map)
+          .toList(),
+    );
+    expect(state.page, 1);
+    expect(state.hasReachedEnd, false);
+    expect(state.isLoadingMore, false);
+    expect(state.loadMoreError, isNull);
+    expect(repository.calls, 1);
+
+    addTearDown(() => controller.dispose());
+  });
+
+  test('Click on article with valid url opens browser', () async {
+    final repository = NewsRepositoryFake(const []);
+    final linkLauncher = LinkLauncherFake(() async => true);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    final url = 'https://example.com/';
+    final uri = Uri.parse(url);
+
+    final effects = <NewsListEffect>[];
+    final subscription = controller.effect.listen(effects.add);
+    controller.onArticlePressed(url);
+
+    await pumpEventQueue();
+    subscription.cancel();
+
+    expect(effects, isEmpty);
+    expect(linkLauncher.openedUris.single, uri);
+    addTearDown(() => controller.dispose());
+  });
+
+  test('Click on article with url without schema not opens browser', () async {
+    final repository = NewsRepositoryFake(const []);
+    final linkLauncher = LinkLauncherFake(() async => false);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    final url = 'example.com/';
+
+    final effects = <NewsListEffect>[];
+    final subscription = controller.effect.listen(effects.add);
+    controller.onArticlePressed(url);
+
+    await pumpEventQueue();
+    subscription.cancel();
+
+    expect(effects.single, const NewsListEffect.articleUrlIsNotValid());
+    expect(linkLauncher.openedUris, isEmpty);
+    addTearDown(() => controller.dispose());
+  });
+
+  test(
+    'Click on article with url not http/https schema not opens browser',
+    () async {
+      final repository = NewsRepositoryFake(const []);
+      final linkLauncher = LinkLauncherFake(() async => false);
+      final controller = NewsListController(repository, linkLauncher, '');
+
+      final url = 'file://example.com/';
+
+      final effects = <NewsListEffect>[];
+      final subscription = controller.effect.listen(effects.add);
+      controller.onArticlePressed(url);
+
+      await pumpEventQueue();
+      subscription.cancel();
+
+      expect(effects.single, const NewsListEffect.articleUrlIsNotValid());
+      expect(linkLauncher.openedUris, isEmpty);
+      addTearDown(() => controller.dispose());
+    },
+  );
+
+  test('Click on article with empty url not opens browser', () async {
+    final repository = NewsRepositoryFake(const []);
+    final linkLauncher = LinkLauncherFake(() async => false);
+    final controller = NewsListController(repository, linkLauncher, '');
+
+    final url = '';
+
+    final effects = <NewsListEffect>[];
+    final subscription = controller.effect.listen(effects.add);
+    controller.onArticlePressed(url);
+
+    await pumpEventQueue();
+    subscription.cancel();
+
+    expect(effects.single, const NewsListEffect.articleUrlIsNotValid());
+    expect(linkLauncher.openedUris, isEmpty);
+    addTearDown(() => controller.dispose());
+  });
+
+  test(
+    'Click on article and link launcher throws error not opens browser',
+    () async {
+      final repository = NewsRepositoryFake(const []);
+      final linkLauncher = LinkLauncherFake(
+        () async => throw Exception('Wrong url'),
+      );
+      final controller = NewsListController(repository, linkLauncher, '');
+
+      final url = 'https://example.com/';
+
+      final effects = <NewsListEffect>[];
+      final subscription = controller.effect.listen(effects.add);
+      controller.onArticlePressed(url);
+
+      await pumpEventQueue();
+      subscription.cancel();
+
+      expect(effects.single, const NewsListEffect.articleUrlIsNotValid());
+      expect(linkLauncher.openedUris, isEmpty);
+      addTearDown(() => controller.dispose());
+    },
+  );
+
+  test(
+    'Click on article and link launcher returns false not opens browser',
+    () async {
+      final repository = NewsRepositoryFake(const []);
+      final linkLauncher = LinkLauncherFake(() async => false);
+      final controller = NewsListController(repository, linkLauncher, '');
+
+      final url = 'https://example.com/';
+
+      final effects = <NewsListEffect>[];
+      final subscription = controller.effect.listen(effects.add);
+      controller.onArticlePressed(url);
+
+      await pumpEventQueue();
+      subscription.cancel();
+
+      expect(effects.single, const NewsListEffect.articleUrlIsNotValid());
+      expect(linkLauncher.openedUris, isEmpty);
+      addTearDown(() => controller.dispose());
+    },
+  );
+}
+
+Future<void> _waitUntil(
+  NewsListController controller,
+  bool Function(NewsListState state) ready,
+) {
+  final completer = Completer<void>();
+  void listener() {
+    if (!completer.isCompleted && ready(controller.state)) {
+      completer.complete();
+    }
+  }
+
+  controller.addListener(listener);
+  return completer.future.whenComplete(
+    () => controller.removeListener(listener),
+  );
+}

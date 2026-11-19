@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:news_shower/common/domain/link_launcher.dart';
 import 'package:news_shower/domain/model/get_news_result.dart';
 import 'package:news_shower/domain/repository/news_repository.dart';
 import 'package:news_shower/feature/news_list/controller/model/article.dart';
@@ -9,12 +10,12 @@ import 'package:news_shower/feature/news_list/controller/model/get_news_error_ma
 import 'package:news_shower/feature/news_list/controller/model/news_list_effect.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_state.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 const int _pageSize = 20;
 
 class NewsListController extends ChangeNotifier {
   final NewsRepository _newsRepository;
+  final LinkLauncher _linkLauncher;
   final String _query;
 
   final _effectController = StreamController<NewsListEffect>();
@@ -25,7 +26,7 @@ class NewsListController extends ChangeNotifier {
 
   StreamSubscription<GetNewsResult>? _subscription;
 
-  NewsListController(this._newsRepository, this._query);
+  NewsListController(this._newsRepository, this._linkLauncher, this._query);
 
   void load() {
     final currentState = state;
@@ -120,13 +121,12 @@ class NewsListController extends ChangeNotifier {
       return;
     }
     try {
-      final result = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      final result = await _linkLauncher.launch(uri);
       if (!result) {
         _effectController.add(const NewsListEffect.articleUrlIsNotValid());
       }
     } catch (e) {
       _effectController.add(const NewsListEffect.articleUrlIsNotValid());
-      return;
     }
   }
 
