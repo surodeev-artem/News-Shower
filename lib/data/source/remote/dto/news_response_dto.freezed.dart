@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NewsResponseDto {
 
- String get status; int? get totalResults; List<ArticleDto>? get articles; String? get code; String? get message;
+ String get status; List<ArticleDto>? get articles; String? get code;
 /// Create a copy of NewsResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,20 +30,20 @@ $NewsResponseDtoCopyWith<NewsResponseDto> get copyWith => _$NewsResponseDtoCopyW
 @override
 bool operator ==(Object other) {
   final _this = this as NewsResponseDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsResponseDto&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.totalResults, _this.totalResults) || other.totalResults == _this.totalResults)&&const DeepCollectionEquality().equals(other.articles, _this.articles)&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.message, _this.message) || other.message == _this.message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsResponseDto&&(identical(other.status, _this.status) || other.status == _this.status)&&const DeepCollectionEquality().equals(other.articles, _this.articles)&&(identical(other.code, _this.code) || other.code == _this.code));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as NewsResponseDto;
-  return Object.hash(runtimeType,_this.status,_this.totalResults,const DeepCollectionEquality().hash(_this.articles),_this.code,_this.message);
+  return Object.hash(runtimeType,_this.status,const DeepCollectionEquality().hash(_this.articles),_this.code);
 }
 
 @override
 String toString() {
   final _this = this as NewsResponseDto;
-  return 'NewsResponseDto(status: ${_this.status}, totalResults: ${_this.totalResults}, articles: ${_this.articles}, code: ${_this.code}, message: ${_this.message})';
+  return 'NewsResponseDto(status: ${_this.status}, articles: ${_this.articles}, code: ${_this.code})';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $NewsResponseDtoCopyWith<$Res>  {
   factory $NewsResponseDtoCopyWith(NewsResponseDto value, $Res Function(NewsResponseDto) _then) = _$NewsResponseDtoCopyWithImpl;
 @useResult
 $Res call({
- String status, int? totalResults, List<ArticleDto>? articles, String? code, String? message
+ String status, List<ArticleDto>? articles, String? code
 });
 
 
@@ -71,13 +71,11 @@ class _$NewsResponseDtoCopyWithImpl<$Res>
 
 /// Create a copy of NewsResponseDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? totalResults = freezed,Object? articles = freezed,Object? code = freezed,Object? message = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? articles = freezed,Object? code = freezed,}) {
   return _then(NewsResponseDto(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,totalResults: freezed == totalResults ? _self.totalResults : totalResults // ignore: cast_nullable_to_non_nullable
-as int?,articles: freezed == articles ? _self.articles : articles // ignore: cast_nullable_to_non_nullable
+as String,articles: freezed == articles ? _self.articles : articles // ignore: cast_nullable_to_non_nullable
 as List<ArticleDto>?,code: freezed == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
-as String?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -163,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String status,  int? totalResults,  List<ArticleDto>? articles,  String? code,  String? message)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String status,  List<ArticleDto>? articles,  String? code)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NewsResponseDto() when $default != null:
-return $default(_that.status,_that.totalResults,_that.articles,_that.code,_that.message);case _:
+return $default(_that.status,_that.articles,_that.code);case _:
   return orElse();
 
 }
@@ -184,10 +182,10 @@ return $default(_that.status,_that.totalResults,_that.articles,_that.code,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String status,  int? totalResults,  List<ArticleDto>? articles,  String? code,  String? message)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String status,  List<ArticleDto>? articles,  String? code)  $default,) {final _that = this;
 switch (_that) {
 case _NewsResponseDto():
-return $default(_that.status,_that.totalResults,_that.articles,_that.code,_that.message);case _:
+return $default(_that.status,_that.articles,_that.code);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +202,10 @@ return $default(_that.status,_that.totalResults,_that.articles,_that.code,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String status,  int? totalResults,  List<ArticleDto>? articles,  String? code,  String? message)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String status,  List<ArticleDto>? articles,  String? code)?  $default,) {final _that = this;
 switch (_that) {
 case _NewsResponseDto() when $default != null:
-return $default(_that.status,_that.totalResults,_that.articles,_that.code,_that.message);case _:
+return $default(_that.status,_that.articles,_that.code);case _:
   return null;
 
 }
@@ -219,11 +217,10 @@ return $default(_that.status,_that.totalResults,_that.articles,_that.code,_that.
 @JsonSerializable()
 
 class _NewsResponseDto implements NewsResponseDto {
-  const _NewsResponseDto({required this.status, this.totalResults,  List<ArticleDto>? articles, this.code, this.message}): _articles = articles;
+  const _NewsResponseDto({required this.status,  List<ArticleDto>? articles, this.code}): _articles = articles;
   factory _NewsResponseDto.fromJson(Map<String, dynamic> json) => _$NewsResponseDtoFromJson(json);
 
 @override final  String status;
-@override final  int? totalResults;
  final  List<ArticleDto>? _articles;
 @override List<ArticleDto>? get articles {
   final value = _articles;
@@ -234,7 +231,6 @@ class _NewsResponseDto implements NewsResponseDto {
 }
 
 @override final  String? code;
-@override final  String? message;
 
 /// Create a copy of NewsResponseDto
 /// with the given fields replaced by the non-null parameter values.
@@ -249,18 +245,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewsResponseDto&&(identical(other.status, status) || other.status == status)&&(identical(other.totalResults, totalResults) || other.totalResults == totalResults)&&const DeepCollectionEquality().equals(other.articles, _articles)&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewsResponseDto&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.articles, _articles)&&(identical(other.code, code) || other.code == code));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,status,totalResults,const DeepCollectionEquality().hash(_articles),code,message);
+    return Object.hash(runtimeType,status,const DeepCollectionEquality().hash(_articles),code);
 }
 
 @override
 String toString() {
-    return 'NewsResponseDto(status: $status, totalResults: $totalResults, articles: $articles, code: $code, message: $message)';
+    return 'NewsResponseDto(status: $status, articles: $articles, code: $code)';
 }
 
 
@@ -271,7 +267,7 @@ abstract mixin class _$NewsResponseDtoCopyWith<$Res> implements $NewsResponseDto
   factory _$NewsResponseDtoCopyWith(_NewsResponseDto value, $Res Function(_NewsResponseDto) _then) = __$NewsResponseDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String status, int? totalResults, List<ArticleDto>? articles, String? code, String? message
+ String status, List<ArticleDto>? articles, String? code
 });
 
 
@@ -288,13 +284,11 @@ class __$NewsResponseDtoCopyWithImpl<$Res>
 
 /// Create a copy of NewsResponseDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? totalResults = freezed,Object? articles = freezed,Object? code = freezed,Object? message = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? articles = freezed,Object? code = freezed,}) {
   return _then(_NewsResponseDto(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,totalResults: freezed == totalResults ? _self.totalResults : totalResults // ignore: cast_nullable_to_non_nullable
-as int?,articles: freezed == articles ? _self._articles : articles // ignore: cast_nullable_to_non_nullable
+as String,articles: freezed == articles ? _self._articles : articles // ignore: cast_nullable_to_non_nullable
 as List<ArticleDto>?,code: freezed == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
-as String?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

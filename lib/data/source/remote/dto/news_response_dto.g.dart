@@ -9,21 +9,17 @@ part of 'news_response_dto.dart';
 _NewsResponseDto _$NewsResponseDtoFromJson(Map<String, dynamic> json) =>
     _NewsResponseDto(
       status: json['status'] as String,
-      totalResults: (json['totalResults'] as num?)?.toInt(),
       articles: (json['articles'] as List<dynamic>?)
           ?.map((e) => ArticleDto.fromJson(e as Map<String, dynamic>))
           .toList(),
       code: json['code'] as String?,
-      message: json['message'] as String?,
     );
 
 Map<String, dynamic> _$NewsResponseDtoToJson(_NewsResponseDto instance) =>
     <String, dynamic>{
       'status': instance.status,
-      'totalResults': instance.totalResults,
       'articles': instance.articles,
       'code': instance.code,
-      'message': instance.message,
     };
 
 _ArticleDto _$ArticleDtoFromJson(Map<String, dynamic> json) => _ArticleDto(

@@ -8,11 +8,9 @@ abstract class NewsResponseDto with _$NewsResponseDto {
   const factory NewsResponseDto({
     required String status,
     // Status: ok
-    int? totalResults,
     List<ArticleDto>? articles,
     // Status: error
     String? code,
-    String? message,
   }) = _NewsResponseDto;
 
   factory NewsResponseDto.fromJson(Map<String, dynamic> json) =>
