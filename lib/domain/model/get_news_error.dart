@@ -6,6 +6,8 @@ sealed class GetNewsError {
   factory GetNewsError.apiKeyExhausted() => GetNewsResultApiKeyExhaustedError();
   factory GetNewsError.apiKeyInvalid() => GetNewsResultApiKeyInvalidError();
   factory GetNewsError.apiKeyMissing() => GetNewsResultApiKeyMissingError();
+  factory GetNewsError.maximumResultsReached() =>
+      GetNewsResultMaximumResultsReachedError();
   factory GetNewsError.unexpected() => GetNewsResultUnexpectedError();
 }
 
@@ -15,3 +17,4 @@ final class GetNewsResultApiKeyExhaustedError extends GetNewsError;
 final class GetNewsResultApiKeyInvalidError extends GetNewsError;
 final class GetNewsResultApiKeyMissingError extends GetNewsError;
 final class GetNewsResultUnexpectedError extends GetNewsError;
+final class GetNewsResultMaximumResultsReachedError extends GetNewsError;

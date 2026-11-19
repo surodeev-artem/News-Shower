@@ -164,6 +164,12 @@ abstract class AppLocalizations {
   /// **'Something went wrong'**
   String get errorUnexpected;
 
+  /// No description provided for @errorMaximumResultsReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum number of search results reached'**
+  String get errorMaximumResultsReached;
+
   /// No description provided for @publishedAt.
   ///
   /// In en, this message translates to:

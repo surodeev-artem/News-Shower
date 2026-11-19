@@ -10,6 +10,7 @@
     "errorApiKeyInvalid": "Invalid API key",
     "errorApiKeyMissing": "API key is missing",
     "errorUnexpected": "Something went wrong",
+    "errorMaximumResultsReached": "Maximum number of search results reached",
     "publishedAt": "{date}",
     "@publishedAt": {
         "placeholders": {

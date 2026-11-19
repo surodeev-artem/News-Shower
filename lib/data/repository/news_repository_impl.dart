@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:news_shower/data/source/remote/dto/news_dto.dart';
 import 'package:news_shower/data/source/remote/news_api.dart';
@@ -20,11 +22,13 @@ class NewsRepositoryImpl implements NewsRepository {
     required int pageSize,
   }) async* {
     try {
+      log('Get new page: ${query.trim()}, $page, $pageSize');
       NewsResponseDto result = await _newsApi.getNewsByQuery(
         query.trim(),
         page,
         pageSize,
       );
+      log('$result');
       if (result.status == _responseStatusOk) {
         yield GetNewsResult.success(
           NewsModel(
@@ -47,6 +51,7 @@ class NewsRepositoryImpl implements NewsRepository {
         yield GetNewsResult.failure(_parseError(result));
       }
     } on DioException catch (e) {
+      log('$e');
       if (e.response?.data is Map) {
         final result = NewsResponseDto.fromJson(
           Map<String, dynamic>.from(e.response?.data),
@@ -56,6 +61,7 @@ class NewsRepositoryImpl implements NewsRepository {
         yield GetNewsResult.failure(GetNewsError.unexpected());
       }
     } catch (e) {
+      log('$e');
       yield GetNewsResult.failure(GetNewsError.unexpected());
     }
   }
@@ -69,6 +75,7 @@ class NewsRepositoryImpl implements NewsRepository {
 
   GetNewsError _parseError(NewsResponseDto response) {
     return switch (response.code) {
+      'maximumResultsReached' => GetNewsError.maximumResultsReached(),
       'apiKeyDisabled' => GetNewsError.apiKeyDisabled(),
       'apiKeyExhausted' => GetNewsError.apiKeyExhausted(),
       'apiKeyInvalid' => GetNewsError.apiKeyInvalid(),

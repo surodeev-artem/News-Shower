@@ -44,6 +44,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorUnexpected => 'Произошла ошибка';
 
   @override
+  String get errorMaximumResultsReached =>
+      'Достигнуто максимальное количество новостей в поиске';
+
+  @override
   String publishedAt(DateTime date) {
     final intl.DateFormat dateDateFormat = intl.DateFormat(
       'dd.MM.yyyy HH:mm',

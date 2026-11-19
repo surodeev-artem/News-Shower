@@ -43,6 +43,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorUnexpected => 'Something went wrong';
 
   @override
+  String get errorMaximumResultsReached =>
+      'Maximum number of search results reached';
+
+  @override
   String publishedAt(DateTime date) {
     final intl.DateFormat dateDateFormat = intl.DateFormat(
       'MMM d, y HH:mm',

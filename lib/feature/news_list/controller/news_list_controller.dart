@@ -103,12 +103,16 @@ class NewsListController extends ChangeNotifier {
                   GetNewsResultApiKeyMissingError() =>
                     NewsListError.apiKeyMissing(),
                   GetNewsResultUnexpectedError() => NewsListError.unexpected(),
+                  GetNewsResultMaximumResultsReachedError() =>
+                    NewsListError.maximumResultsReached(),
                 };
 
                 state = currentState is NewsListStateData
                     ? currentState.copyWith(
                         isLoadingMore: false,
                         loadMoreError: error,
+                        hasReachedEnd:
+                            error is NewsListErrorMaximumResultsReached,
                       )
                     : NewsListState.failure(error: error);
 

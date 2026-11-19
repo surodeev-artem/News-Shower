@@ -23,6 +23,7 @@ final class NewsListScreen extends StatefulWidget {
 
 final class _NewsListScreenState extends State<NewsListScreen>
     with SingleTickerProviderStateMixin {
+  final ScrollController _scrollController = ScrollController();
   late final NewsListController _controller;
   late final AnimationController _shimmer;
 
@@ -48,7 +49,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
             NewsListStateInit() => _loading(),
             NewsListStateLoading() => _loading(),
             NewsListStateEmpty() => _emptyList(),
-            NewsListStateData() => _success(newsList: state.data),
+            NewsListStateData() => _success(state: state),
             NewsListStateFailure() => _failure(error: state.error),
           };
         },
@@ -75,69 +76,97 @@ final class _NewsListScreenState extends State<NewsListScreen>
 
   Widget _failure({required NewsListError error}) {
     return SizedBox.expand(
-      child: Center(
-        child: Column(
-          children: switch (error) {
-            NewsListErrorRateLimited() => [
-              Text(
-                context.l10n.errorTooManyRequest,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              const SizedBox(height: 8),
-              _retryButton(onPressed: () => _controller.load()),
-            ],
-            NewsListErrorApiKeyDisabled() => [
-              Text(
-                context.l10n.errorApiKeyDisabled,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
-            NewsListErrorApiKeyExhausted() => [
-              Text(
-                context.l10n.errorApiKeyExhausted,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
-            NewsListErrorApiKeyInvalid() => [
-              Text(
-                context.l10n.errorApiKeyInvalid,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
-            NewsListErrorApiKeyMissing() => [
-              Text(
-                context.l10n.errorApiKeyMissing,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
-            NewsListErrorUnexpected() => [
-              Text(
-                context.l10n.errorUnexpected,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              const SizedBox(height: 8),
-              _retryButton(onPressed: () => _controller.load()),
-            ],
-          },
-        ),
-      ),
+      child: Center(child: _failureItem(error: error)),
     );
   }
 
-  Widget _success({required NewsList newsList}) {
+  Widget _failureItem({required NewsListError error}) {
+    return Column(
+      children: switch (error) {
+        NewsListErrorRateLimited() => [
+          Text(
+            context.l10n.errorTooManyRequest,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 8),
+          _retryButton(onPressed: () => _controller.load()),
+        ],
+        NewsListErrorApiKeyDisabled() => [
+          Text(
+            context.l10n.errorApiKeyDisabled,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ],
+        NewsListErrorApiKeyExhausted() => [
+          Text(
+            context.l10n.errorApiKeyExhausted,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ],
+        NewsListErrorApiKeyInvalid() => [
+          Text(
+            context.l10n.errorApiKeyInvalid,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ],
+        NewsListErrorApiKeyMissing() => [
+          Text(
+            context.l10n.errorApiKeyMissing,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ],
+        NewsListErrorUnexpected() => [
+          Text(
+            context.l10n.errorUnexpected,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 8),
+          _retryButton(onPressed: () => _controller.load()),
+        ],
+        NewsListErrorMaximumResultsReached() => [
+          Text(
+            context.l10n.errorMaximumResultsReached,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ],
+      },
+    );
+  }
+
+  Widget _success({required NewsListStateData state}) {
     final bottomInset = MediaQuery.paddingOf(context).bottom;
     final padding = 8.0;
+    final hasFooter = !state.hasReachedEnd || state.loadMoreError != null;
 
     return SizedBox.expand(
-      child: ListView.builder(
-        itemCount: newsList.news.length,
-        padding: EdgeInsets.fromLTRB(
-          padding,
-          padding,
-          padding,
-          bottomInset + padding,
+      child: NotificationListener<ScrollEndNotification>(
+        onNotification: (notification) {
+          if (state.loadMoreError != null || state.isLoadingMore) return false;
+
+          final metrics = notification.metrics;
+          final atEnd = metrics.pixels >= metrics.maxScrollExtent;
+          if (atEnd) {
+            _controller.load();
+          }
+          return false;
+        },
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: state.data.news.length + (hasFooter ? 1 : 0),
+          padding: EdgeInsets.only(
+            left: padding,
+            top: padding,
+            right: padding,
+            bottom: bottomInset + (hasFooter ? 0 : bottomInset),
+          ),
+          itemBuilder: (_, index) {
+            if (index == state.data.news.length) {
+              return _footer(state);
+            }
+
+            return _article(article: state.data.news[index]);
+          },
         ),
-        itemBuilder: (_, index) => _article(article: newsList.news[index]),
       ),
     );
   }
@@ -260,6 +289,19 @@ final class _NewsListScreenState extends State<NewsListScreen>
     );
   }
 
+  Widget _footer(NewsListStateData state) {
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
+    final loadMoreError = state.loadMoreError;
+    return Padding(
+      padding: EdgeInsets.only(top: 16, bottom: 16 + bottomInset),
+      child: state.isLoadingMore
+          ? const Center(child: CircularProgressIndicator())
+          : loadMoreError != null
+          ? _failureItem(error: loadMoreError)
+          : const SizedBox(height: 16),
+    );
+  }
+
   Future<void> _openInBrowser(String? rawUrl) async {
     final url = rawUrl;
     if (url == null || url.isEmpty) return;
@@ -276,6 +318,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
   void dispose() {
     _shimmer.stop();
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 }
