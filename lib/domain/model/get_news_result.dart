@@ -4,11 +4,13 @@ import 'package:news_shower/domain/model/news_model.dart';
 sealed class GetNewsResult {
   const GetNewsResult();
 
-  factory GetNewsResult.success(NewsModel news) => GetNewsResultSuccess(news);
+  factory GetNewsResult.success(NewsModel news, int totalResult) =>
+      GetNewsResultSuccess(news, totalResult);
   factory GetNewsResult.failure(GetNewsError error) =>
       GetNewsResultFailure(error);
 }
 
-final class GetNewsResultSuccess(final NewsModel news) extends GetNewsResult;
+final class GetNewsResultSuccess(final NewsModel news, final int totalResult)
+    extends GetNewsResult;
 final class GetNewsResultFailure(final GetNewsError error)
     extends GetNewsResult;

@@ -45,9 +45,10 @@ final class _NewsListScreenState extends State<NewsListScreen>
         builder: (_, _) {
           NewsListState state = _controller.state;
           return switch (state) {
+            NewsListStateInit() => _loading(),
             NewsListStateLoading() => _loading(),
             NewsListStateEmpty() => _emptyList(),
-            NewsListStateSuccess() => _success(newsList: state.data),
+            NewsListStateData() => _success(newsList: state.data),
             NewsListStateFailure() => _failure(error: state.error),
           };
         },

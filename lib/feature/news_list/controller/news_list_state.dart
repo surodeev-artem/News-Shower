@@ -1,28 +1,21 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:news_shower/feature/news_list/controller/news_list.dart';
 import 'package:news_shower/feature/news_list/controller/news_list_error.dart';
 
-sealed class NewsListState {
-  const NewsListState();
+part 'news_list_state.freezed.dart';
 
-  factory NewsListState.loading() => NewsListStateLoading();
-  factory NewsListState.empty() => NewsListStateEmpty();
-  factory NewsListState.success(NewsList data) => NewsListStateSuccess(data);
-  factory NewsListState.failure(NewsListError error) =>
-      NewsListStateFailure(error);
-}
-
-final class NewsListStateLoading extends NewsListState;
-
-final class NewsListStateEmpty extends NewsListState;
-
-final class NewsListStateSuccess extends NewsListState {
-  final NewsList data;
-
-  const NewsListStateSuccess(this.data);
-}
-
-final class NewsListStateFailure extends NewsListState {
-  final NewsListError error;
-
-  const NewsListStateFailure(this.error);
+@freezed
+sealed class NewsListState with _$NewsListState {
+  const factory NewsListState.init() = NewsListStateInit;
+  const factory NewsListState.loading() = NewsListStateLoading;
+  const factory NewsListState.empty() = NewsListStateEmpty;
+  const factory NewsListState.failure({required NewsListError error}) =
+      NewsListStateFailure;
+  const factory NewsListState.data({
+    required NewsList data,
+    @Default(1) int page,
+    @Default(false) bool isLoadingMore,
+    @Default(false) bool hasReachedEnd,
+    NewsListError? loadMoreError,
+  }) = NewsListStateData;
 }

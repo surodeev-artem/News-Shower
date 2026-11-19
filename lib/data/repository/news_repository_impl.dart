@@ -14,12 +14,16 @@ class NewsRepositoryImpl implements NewsRepository {
   NewsRepositoryImpl(this._newsApi);
 
   @override
-  Stream<GetNewsResult> getNewsByQuery(String query) async* {
+  Stream<GetNewsResult> getNewsByQuery({
+    required String query,
+    required int page,
+    required int pageSize,
+  }) async* {
     try {
       NewsResponseDto result = await _newsApi.getNewsByQuery(
         query.trim(),
-        1,
-        10,
+        page,
+        pageSize,
       );
       if (result.status == _responseStatusOk) {
         yield GetNewsResult.success(
@@ -36,6 +40,8 @@ class NewsRepositoryImpl implements NewsRepository {
                 }).toList() ??
                 const [],
           ),
+
+          result.totalResults ?? 0,
         );
       } else {
         yield GetNewsResult.failure(_parseError(result));
