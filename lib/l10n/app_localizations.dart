@@ -170,6 +170,12 @@ abstract class AppLocalizations {
   /// **'Maximum number of search results reached'**
   String get errorMaximumResultsReached;
 
+  /// No description provided for @errorArticleUrlInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid article URL'**
+  String get errorArticleUrlInvalid;
+
   /// No description provided for @publishedAt.
   ///
   /// In en, this message translates to:

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:material_ui/material_ui.dart';
 import 'package:news_shower/common/ui/app_localizations_ext.dart';
 import 'package:news_shower/feature/news_search/controller/news_search_controller.dart';
-import 'package:news_shower/feature/news_search/controller/news_search_effect.dart';
+import 'package:news_shower/feature/news_search/controller/model/news_search_effect.dart';
 import 'package:news_shower/navigation/app_routes.dart';
 
 class NewsSearchScreen extends StatefulWidget {
@@ -32,49 +32,55 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsetsGeometry.symmetric(horizontal: 32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  context.l10n.searchTitle,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _textEditingController,
-                  decoration: InputDecoration(
-                    labelText: context.l10n.queryPlaceholder,
-                    border: const OutlineInputBorder(),
-                  ),
-                  onChanged: (value) =>
-                      widget._controller.onSearchQueryChanged(value),
-                  textInputAction: TextInputAction.search,
-                  onSubmitted: (value) =>
-                      widget._controller.onSearchButtonPressed(value),
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  child: ListenableBuilder(
-                    listenable: widget._controller,
-                    builder: (_, _) => FilledButton(
-                      onPressed: widget._controller.state.isSearchButtonEnabled
-                          ? () {
-                              widget._controller.onSearchButtonPressed(
-                                _textEditingController.text,
-                              );
-                            }
-                          : null,
-                      child: Text(context.l10n.searchButton),
+        child: CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: true,
+              child: Padding(
+                padding: const EdgeInsetsGeometry.symmetric(horizontal: 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      context.l10n.searchTitle,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                  ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _textEditingController,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.queryPlaceholder,
+                        border: const OutlineInputBorder(),
+                      ),
+                      onChanged: (value) =>
+                          widget._controller.onSearchQueryChanged(value),
+                      textInputAction: TextInputAction.search,
+                      onSubmitted: (value) =>
+                          widget._controller.onSearchButtonPressed(value),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ListenableBuilder(
+                        listenable: widget._controller,
+                        builder: (_, _) => FilledButton(
+                          onPressed:
+                              widget._controller.state.isSearchButtonEnabled
+                              ? () {
+                                  widget._controller.onSearchButtonPressed(
+                                    _textEditingController.text,
+                                  );
+                                }
+                              : null,
+                          child: Text(context.l10n.searchButton),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -83,6 +89,7 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
   void _onEffect(NewsSearchEffect effect) {
     switch (effect) {
       case NewsSearchEffectGoToList(:final query):
+        if (!mounted) break;
         Navigator.of(context)
             .pushNamed(
               AppRoutes.newsList,
@@ -97,9 +104,9 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
 
   @override
   void dispose() {
+    _effects.cancel();
     _textEditingController.dispose();
     widget._controller.dispose();
-    _effects.cancel();
     super.dispose();
   }
 }

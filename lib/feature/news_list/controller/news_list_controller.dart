@@ -6,8 +6,10 @@ import 'package:news_shower/domain/repository/news_repository.dart';
 import 'package:news_shower/feature/news_list/controller/model/article.dart';
 import 'package:news_shower/feature/news_list/controller/model/article_model_mapper.dart';
 import 'package:news_shower/feature/news_list/controller/model/get_news_error_mapper.dart';
+import 'package:news_shower/feature/news_list/controller/model/news_list_effect.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_state.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const int _pageSize = 20;
 
@@ -15,13 +17,15 @@ class NewsListController extends ChangeNotifier {
   final NewsRepository _newsRepository;
   final String _query;
 
+  final _effectController = StreamController<NewsListEffect>();
+  late final Stream<NewsListEffect> effect = _effectController.stream;
+
+  NewsListState _state = const NewsListState.init();
+  NewsListState get state => _state;
+
   StreamSubscription<GetNewsResult>? _subscription;
 
-  NewsListState state = const NewsListState.init();
-
-  NewsListController(this._newsRepository, this._query) {
-    load();
-  }
+  NewsListController(this._newsRepository, this._query);
 
   void load() {
     final currentState = state;
@@ -32,7 +36,7 @@ class NewsListController extends ChangeNotifier {
       return;
     }
 
-    state = currentState is NewsListStateData
+    _state = currentState is NewsListStateData
         ? currentState.copyWith(isLoadingMore: true, loadMoreError: null)
         : const NewsListState.loading();
     notifyListeners();
@@ -60,11 +64,11 @@ class NewsListController extends ChangeNotifier {
                 final newArticles = [...previousArticles, ...currentArticles];
 
                 if (newArticles.isEmpty) {
-                  state = const NewsListState.empty();
+                  _state = const NewsListState.empty();
                   break;
                 }
 
-                state = currentState is NewsListStateData
+                _state = currentState is NewsListStateData
                     ? currentState.copyWith(
                         articles: newArticles,
                         page: currentPage,
@@ -85,7 +89,7 @@ class NewsListController extends ChangeNotifier {
               {
                 final error = GetNewsErrorMapper.map(resultModel.error);
 
-                state = currentState is NewsListStateData
+                _state = currentState is NewsListStateData
                     ? currentState.copyWith(
                         isLoadingMore: false,
                         loadMoreError: error,
@@ -102,9 +106,34 @@ class NewsListController extends ChangeNotifier {
         });
   }
 
+  Future<void> onArticlePressed(String? articleUrl) async {
+    final url = articleUrl;
+    if (url == null || url.isEmpty) {
+      _effectController.add(const NewsListEffect.articleUrlIsNotValid());
+      return;
+    }
+    final uri = Uri.tryParse(url);
+    if (uri == null ||
+        !uri.hasScheme ||
+        (!uri.isScheme('HTTP') && !uri.isScheme('HTTPS'))) {
+      _effectController.add(const NewsListEffect.articleUrlIsNotValid());
+      return;
+    }
+    try {
+      final result = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!result) {
+        _effectController.add(const NewsListEffect.articleUrlIsNotValid());
+      }
+    } catch (e) {
+      _effectController.add(const NewsListEffect.articleUrlIsNotValid());
+      return;
+    }
+  }
+
   @override
   void dispose() {
     _subscription?.cancel();
+    _effectController.close();
     super.dispose();
   }
 }

@@ -1,13 +1,15 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:news_shower/common/ui/app_localizations_ext.dart';
 import 'package:news_shower/common/ui/shimmer_box.dart';
 import 'package:news_shower/feature/news_list/controller/model/article.dart';
+import 'package:news_shower/feature/news_list/controller/model/news_list_effect.dart';
 import 'package:news_shower/feature/news_list/controller/news_list_controller.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_state.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 final class NewsListScreen extends StatefulWidget {
   final String query;
@@ -28,6 +30,7 @@ final class NewsListScreen extends StatefulWidget {
 final class _NewsListScreenState extends State<NewsListScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _shimmer;
+  late final StreamSubscription<NewsListEffect> _effects;
 
   int _visibleShimmers = 0;
 
@@ -37,7 +40,9 @@ final class _NewsListScreenState extends State<NewsListScreen>
     _shimmer = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
-    )..repeat();
+    );
+    _effects = widget._controller.effect.listen(_onEffect);
+    widget._controller.load();
   }
 
   @override
@@ -170,10 +175,19 @@ final class _NewsListScreenState extends State<NewsListScreen>
             left: padding,
             top: padding,
             right: padding,
-            bottom: bottomInset + (hasFooter ? 0 : bottomInset),
+            bottom: hasFooter ? 0 : padding + bottomInset,
           ),
           itemBuilder: (_, index) {
             if (index == state.articles.length) {
+              final shouldLoad =
+                  !state.hasReachedEnd &&
+                  !state.isLoadingMore &&
+                  state.loadMoreError == null;
+              if (shouldLoad) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) widget._controller.load();
+                });
+              }
               return _footer(state);
             }
 
@@ -212,104 +226,98 @@ final class _NewsListScreenState extends State<NewsListScreen>
         ? context.l10n.publishedAt(publishedAt)
         : null;
 
+    const imageSide = 128.0;
+    const gap = 16.0;
+    final hasImage = imageUrl != null && imageUrl.isNotEmpty;
+
+    final cacheSide = (imageSide * MediaQuery.devicePixelRatioOf(context))
+        .round();
+
     return Card(
       key: key,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => _openInBrowser(article.url),
+        onTap: () => widget._controller.onArticlePressed(article.url),
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              const imageSide = 128.0;
-              const gap = 16.0;
-              final hasImage = imageUrl != null && imageUrl.isNotEmpty;
-
-              final cacheSide =
-                  (imageSide * MediaQuery.devicePixelRatioOf(context)).round();
-
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (hasImage) ...[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: CachedNetworkImage(
-                        imageUrl: imageUrl,
-                        width: imageSide,
-                        height: imageSide,
-                        memCacheWidth: cacheSide,
-                        fit: BoxFit.cover,
-                        useOldImageOnUrlChange: true,
-                        placeholder: (_, _) => ShimmerBox(
-                          width: imageSide,
-                          height: imageSide,
-                          animation: _shimmer,
-                          onShown: _onShimmerShown,
-                          onHidden: _onShimmerHidden,
-                        ),
-                        errorWidget: (_, _, _) => Center(
-                          child: SvgPicture.asset(
-                            'assets/icon/ic_not_found.svg',
-                            width: 64,
-                            height: 64,
-                          ),
-                        ),
-                      ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (hasImage) ...[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    width: imageSide,
+                    height: imageSide,
+                    memCacheWidth: cacheSide,
+                    fit: BoxFit.cover,
+                    useOldImageOnUrlChange: true,
+                    placeholder: (_, _) => ShimmerBox(
+                      width: imageSide,
+                      height: imageSide,
+                      animation: _shimmer,
+                      onShown: _onShimmerShown,
+                      onHidden: _onShimmerHidden,
                     ),
-                    const SizedBox(width: gap),
-                  ],
-                  Expanded(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: hasImage ? imageSide : 0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (source != null) ...[
-                                Text(
-                                  source,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium,
-                                ),
-                                const SizedBox(height: 8),
-                              ],
-                              if (title != null)
-                                Text(
-                                  title,
-                                  style: Theme.of(context).textTheme.titleSmall,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                ),
-                              if (description != null)
-                                Text(
-                                  description,
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 4,
-                                ),
-                            ],
-                          ),
-                          if (publishedAtFormatted != null) ...[
-                            const SizedBox(height: 8),
-                            Text(
-                              publishedAtFormatted,
-                              style: Theme.of(context).textTheme.labelSmall,
-                            ),
-                          ],
-                        ],
+                    errorWidget: (_, _, _) => Center(
+                      child: SvgPicture.asset(
+                        'assets/icon/ic_not_found.svg',
+                        width: 64,
+                        height: 64,
                       ),
                     ),
                   ),
-                ],
-              );
-            },
+                ),
+                const SizedBox(width: gap),
+              ],
+              Expanded(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: hasImage ? imageSide : 0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (source != null) ...[
+                            Text(
+                              source,
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          if (title != null)
+                            Text(
+                              title,
+                              style: Theme.of(context).textTheme.titleSmall,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                          if (description != null)
+                            Text(
+                              description,
+                              style: Theme.of(context).textTheme.bodySmall,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 4,
+                            ),
+                        ],
+                      ),
+                      if (publishedAtFormatted != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          publishedAtFormatted,
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -334,25 +342,6 @@ final class _NewsListScreenState extends State<NewsListScreen>
     );
   }
 
-  Future<void> _openInBrowser(String? rawUrl) async {
-    final url = rawUrl;
-    if (url == null || url.isEmpty) return;
-    final uri = Uri.tryParse(url);
-    if (uri == null || !uri.hasScheme) return;
-    try {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } catch (e) {
-      return;
-    }
-  }
-
-  @override
-  void dispose() {
-    _shimmer.stop();
-    widget._controller.dispose();
-    super.dispose();
-  }
-
   void _onShimmerShown() {
     _visibleShimmers++;
     if (!_shimmer.isAnimating) _shimmer.repeat();
@@ -361,5 +350,25 @@ final class _NewsListScreenState extends State<NewsListScreen>
   void _onShimmerHidden() {
     _visibleShimmers--;
     if (_visibleShimmers == 0) _shimmer.stop();
+  }
+
+  void _onEffect(NewsListEffect effect) {
+    switch (effect) {
+      case NewsListEffectArticleUrlIsNotValid():
+        if (!mounted) return;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text(context.l10n.errorArticleUrlInvalid)),
+          );
+    }
+  }
+
+  @override
+  void dispose() {
+    _shimmer.stop();
+    _effects.cancel();
+    widget._controller.dispose();
+    super.dispose();
   }
 }

@@ -48,6 +48,9 @@ class AppLocalizationsRu extends AppLocalizations {
       'Достигнуто максимальное количество новостей в поиске';
 
   @override
+  String get errorArticleUrlInvalid => 'Некорректный URL статьи';
+
+  @override
   String publishedAt(DateTime date) {
     final intl.DateFormat dateDateFormat = intl.DateFormat(
       'dd.MM.yyyy HH:mm',

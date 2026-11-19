@@ -11,6 +11,7 @@
     "errorApiKeyMissing": "API key is missing",
     "errorUnexpected": "Something went wrong",
     "errorMaximumResultsReached": "Maximum number of search results reached",
+    "errorArticleUrlInvalid": "Invalid article URL",
     "publishedAt": "{date}",
     "@publishedAt": {
         "placeholders": {

@@ -47,6 +47,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Maximum number of search results reached';
 
   @override
+  String get errorArticleUrlInvalid => 'Invalid article URL';
+
+  @override
   String publishedAt(DateTime date) {
     final intl.DateFormat dateDateFormat = intl.DateFormat(
       'MMM d, y HH:mm',

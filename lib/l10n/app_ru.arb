@@ -11,6 +11,7 @@
     "errorApiKeyMissing": "Отсутствует ключ API",
     "errorUnexpected": "Произошла ошибка",
     "errorMaximumResultsReached": "Достигнуто максимальное количество новостей в поиске",
+    "errorArticleUrlInvalid": "Некорректный URL статьи",
     "publishedAt": "{date}",
     "@publishedAt": {
         "placeholders": {
