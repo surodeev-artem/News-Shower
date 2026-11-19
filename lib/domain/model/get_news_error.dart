@@ -1,20 +1,15 @@
-sealed class GetNewsError {
-  const GetNewsError();
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  factory GetNewsError.rateLimited() => GetNewsResultRateLimitedError();
-  factory GetNewsError.apiKeyDisabled() => GetNewsResultApiKeyDisabledError();
-  factory GetNewsError.apiKeyExhausted() => GetNewsResultApiKeyExhaustedError();
-  factory GetNewsError.apiKeyInvalid() => GetNewsResultApiKeyInvalidError();
-  factory GetNewsError.apiKeyMissing() => GetNewsResultApiKeyMissingError();
-  factory GetNewsError.maximumResultsReached() =>
-      GetNewsResultMaximumResultsReachedError();
-  factory GetNewsError.unexpected() => GetNewsResultUnexpectedError();
+part 'get_news_error.freezed.dart';
+
+@freezed
+sealed class GetNewsError with _$GetNewsError {
+  const factory GetNewsError.rateLimited() = GetNewsErrorRateLimited;
+  const factory GetNewsError.apiKeyDisabled() = GetNewsErrorApiKeyDisabled;
+  const factory GetNewsError.apiKeyExhausted() = GetNewsErrorApiKeyExhausted;
+  const factory GetNewsError.apiKeyInvalid() = GetNewsErrorApiKeyInvalid;
+  const factory GetNewsError.apiKeyMissing() = GetNewsErrorApiKeyMissing;
+  const factory GetNewsError.maximumResultsReached() =
+      GetNewsErrorMaximumResultsReached;
+  const factory GetNewsError.unexpected() = GetNewsErrorUnexpected;
 }
-
-final class GetNewsResultRateLimitedError extends GetNewsError;
-final class GetNewsResultApiKeyDisabledError extends GetNewsError;
-final class GetNewsResultApiKeyExhaustedError extends GetNewsError;
-final class GetNewsResultApiKeyInvalidError extends GetNewsError;
-final class GetNewsResultApiKeyMissingError extends GetNewsError;
-final class GetNewsResultUnexpectedError extends GetNewsError;
-final class GetNewsResultMaximumResultsReachedError extends GetNewsError;

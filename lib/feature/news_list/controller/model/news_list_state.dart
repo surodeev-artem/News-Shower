@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:news_shower/feature/news_list/controller/news_list.dart';
-import 'package:news_shower/feature/news_list/controller/news_list_error.dart';
+import 'package:news_shower/feature/news_list/controller/model/article.dart';
+import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
 
 part 'news_list_state.freezed.dart';
 
@@ -12,7 +12,7 @@ sealed class NewsListState with _$NewsListState {
   const factory NewsListState.failure({required NewsListError error}) =
       NewsListStateFailure;
   const factory NewsListState.data({
-    required NewsList data,
+    required List<Article> articles,
     @Default(1) int page,
     @Default(false) bool isLoadingMore,
     @Default(false) bool hasReachedEnd,

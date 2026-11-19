@@ -6,5 +6,5 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   AppInjector.init();
 
-  runApp(const NewShowerApp());
+  runApp(const NewsShowerApp());
 }

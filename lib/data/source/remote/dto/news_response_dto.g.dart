@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'news_dto.dart';
+part of 'news_response_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

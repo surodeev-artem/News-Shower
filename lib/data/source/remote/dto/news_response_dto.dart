@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'news_dto.freezed.dart';
-part 'news_dto.g.dart';
+part 'news_response_dto.freezed.dart';
+part 'news_response_dto.g.dart';
 
 @freezed
 abstract class NewsResponseDto with _$NewsResponseDto {

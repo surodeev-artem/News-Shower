@@ -129,14 +129,14 @@ return data(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function()?  loading,TResult Function()?  empty,TResult Function( NewsListError error)?  failure,TResult Function( NewsList data,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)?  data,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function()?  loading,TResult Function()?  empty,TResult Function( NewsListError error)?  failure,TResult Function( List<Article> articles,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)?  data,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case NewsListStateInit() when init != null:
 return init();case NewsListStateLoading() when loading != null:
 return loading();case NewsListStateEmpty() when empty != null:
 return empty();case NewsListStateFailure() when failure != null:
 return failure(_that.error);case NewsListStateData() when data != null:
-return data(_that.data,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);case _:
+return data(_that.articles,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);case _:
   return orElse();
 
 }
@@ -154,14 +154,14 @@ return data(_that.data,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function()  loading,required TResult Function()  empty,required TResult Function( NewsListError error)  failure,required TResult Function( NewsList data,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)  data,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function()  loading,required TResult Function()  empty,required TResult Function( NewsListError error)  failure,required TResult Function( List<Article> articles,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)  data,}) {final _that = this;
 switch (_that) {
 case NewsListStateInit():
 return init();case NewsListStateLoading():
 return loading();case NewsListStateEmpty():
 return empty();case NewsListStateFailure():
 return failure(_that.error);case NewsListStateData():
-return data(_that.data,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);}
+return data(_that.articles,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -175,14 +175,14 @@ return data(_that.data,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function()?  loading,TResult? Function()?  empty,TResult? Function( NewsListError error)?  failure,TResult? Function( NewsList data,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)?  data,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function()?  loading,TResult? Function()?  empty,TResult? Function( NewsListError error)?  failure,TResult? Function( List<Article> articles,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)?  data,}) {final _that = this;
 switch (_that) {
 case NewsListStateInit() when init != null:
 return init();case NewsListStateLoading() when loading != null:
 return loading();case NewsListStateEmpty() when empty != null:
 return empty();case NewsListStateFailure() when failure != null:
 return failure(_that.error);case NewsListStateData() when data != null:
-return data(_that.data,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);case _:
+return data(_that.articles,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);case _:
   return null;
 
 }
@@ -331,7 +331,7 @@ $Res call({
 });
 
 
-
+$NewsListErrorCopyWith<$Res> get error;
 
 }
 /// @nodoc
@@ -351,17 +351,32 @@ as NewsListError,
   ));
 }
 
-
+/// Create a copy of NewsListState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$NewsListErrorCopyWith<$Res> get error {
+  
+  return $NewsListErrorCopyWith<$Res>(_self.error, (value) {
+    return _then(_self.copyWith(error: value));
+  });
+}
 }
 
 /// @nodoc
 
 
 class NewsListStateData implements NewsListState {
-  const NewsListStateData({required this.data, this.page = 1, this.isLoadingMore = false, this.hasReachedEnd = false, this.loadMoreError});
+  const NewsListStateData({required  List<Article> articles, this.page = 1, this.isLoadingMore = false, this.hasReachedEnd = false, this.loadMoreError}): _articles = articles;
   
 
- final  NewsList data;
+ final  List<Article> _articles;
+ List<Article> get articles {
+  if (_articles is EqualUnmodifiableListView) return _articles;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_articles);
+}
+
 @JsonKey() final  int page;
 @JsonKey() final  bool isLoadingMore;
 @JsonKey() final  bool hasReachedEnd;
@@ -377,18 +392,18 @@ $NewsListStateDataCopyWith<NewsListStateData> get copyWith => _$NewsListStateDat
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsListStateData&&(identical(other.data, data) || other.data == data)&&(identical(other.page, page) || other.page == page)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore)&&(identical(other.hasReachedEnd, hasReachedEnd) || other.hasReachedEnd == hasReachedEnd)&&(identical(other.loadMoreError, loadMoreError) || other.loadMoreError == loadMoreError));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsListStateData&&const DeepCollectionEquality().equals(other.articles, _articles)&&(identical(other.page, page) || other.page == page)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore)&&(identical(other.hasReachedEnd, hasReachedEnd) || other.hasReachedEnd == hasReachedEnd)&&(identical(other.loadMoreError, loadMoreError) || other.loadMoreError == loadMoreError));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,data,page,isLoadingMore,hasReachedEnd,loadMoreError);
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_articles),page,isLoadingMore,hasReachedEnd,loadMoreError);
 }
 
 @override
 String toString() {
-    return 'NewsListState.data(data: $data, page: $page, isLoadingMore: $isLoadingMore, hasReachedEnd: $hasReachedEnd, loadMoreError: $loadMoreError)';
+    return 'NewsListState.data(articles: $articles, page: $page, isLoadingMore: $isLoadingMore, hasReachedEnd: $hasReachedEnd, loadMoreError: $loadMoreError)';
 }
 
 
@@ -399,11 +414,11 @@ abstract mixin class $NewsListStateDataCopyWith<$Res> implements $NewsListStateC
   factory $NewsListStateDataCopyWith(NewsListStateData value, $Res Function(NewsListStateData) _then) = _$NewsListStateDataCopyWithImpl;
 @useResult
 $Res call({
- NewsList data, int page, bool isLoadingMore, bool hasReachedEnd, NewsListError? loadMoreError
+ List<Article> articles, int page, bool isLoadingMore, bool hasReachedEnd, NewsListError? loadMoreError
 });
 
 
-
+$NewsListErrorCopyWith<$Res>? get loadMoreError;
 
 }
 /// @nodoc
@@ -416,10 +431,10 @@ class _$NewsListStateDataCopyWithImpl<$Res>
 
 /// Create a copy of NewsListState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? data = null,Object? page = null,Object? isLoadingMore = null,Object? hasReachedEnd = null,Object? loadMoreError = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? articles = null,Object? page = null,Object? isLoadingMore = null,Object? hasReachedEnd = null,Object? loadMoreError = freezed,}) {
   return _then(NewsListStateData(
-data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as NewsList,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+articles: null == articles ? _self._articles : articles // ignore: cast_nullable_to_non_nullable
+as List<Article>,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,isLoadingMore: null == isLoadingMore ? _self.isLoadingMore : isLoadingMore // ignore: cast_nullable_to_non_nullable
 as bool,hasReachedEnd: null == hasReachedEnd ? _self.hasReachedEnd : hasReachedEnd // ignore: cast_nullable_to_non_nullable
 as bool,loadMoreError: freezed == loadMoreError ? _self.loadMoreError : loadMoreError // ignore: cast_nullable_to_non_nullable
@@ -427,7 +442,19 @@ as NewsListError?,
   ));
 }
 
+/// Create a copy of NewsListState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$NewsListErrorCopyWith<$Res>? get loadMoreError {
+    if (_self.loadMoreError == null) {
+    return null;
+  }
 
+  return $NewsListErrorCopyWith<$Res>(_self.loadMoreError!, (value) {
+    return _then(_self.copyWith(loadMoreError: value));
+  });
+}
 }
 
 // dart format on

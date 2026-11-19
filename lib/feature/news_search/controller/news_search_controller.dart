@@ -10,6 +10,8 @@ class NewsSearchController extends ChangeNotifier {
   NewsSearchState state = const NewsSearchState(isSearchButtonEnabled: false);
   late final Stream<NewsSearchEffect> effect = _effectController.stream;
 
+  bool _listOpened = false;
+
   void onSearchQueryChanged(String query) {
     state = state.copyWith(isSearchButtonEnabled: query.trim().isNotEmpty);
     notifyListeners();
@@ -17,7 +19,10 @@ class NewsSearchController extends ChangeNotifier {
 
   void onSearchButtonPressed(String query) {
     final normalized = query.trim();
-    if (normalized.isEmpty) return;
+    if (normalized.isEmpty || _listOpened) return;
+    _listOpened = true;
+    state = state.copyWith(isSearchButtonEnabled: query.trim().isNotEmpty);
+    notifyListeners();
     _effectController.add(NewsSearchEffect.goToList(query: normalized));
   }
 
@@ -25,5 +30,9 @@ class NewsSearchController extends ChangeNotifier {
   void dispose() {
     _effectController.close();
     super.dispose();
+  }
+
+  void onReturnedFromList() {
+    _listOpened = false;
   }
 }

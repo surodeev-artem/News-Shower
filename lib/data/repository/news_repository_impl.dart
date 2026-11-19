@@ -1,14 +1,10 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
-import 'package:news_shower/data/source/remote/dto/news_dto.dart';
+import 'package:news_shower/data/source/remote/dto/news_response_dto.dart';
+import 'package:news_shower/data/source/remote/dto/news_response_dto_mapper.dart';
 import 'package:news_shower/data/source/remote/news_api.dart';
 import 'package:news_shower/domain/model/get_news_error.dart';
 import 'package:news_shower/domain/model/get_news_result.dart';
-import 'package:news_shower/domain/model/news_model.dart';
 import 'package:news_shower/domain/repository/news_repository.dart';
-
-const String _responseStatusOk = 'ok';
 
 class NewsRepositoryImpl implements NewsRepository {
   final NewsApi _newsApi;
@@ -20,68 +16,55 @@ class NewsRepositoryImpl implements NewsRepository {
     required String query,
     required int page,
     required int pageSize,
-  }) async* {
+  }) {
+    return Stream<GetNewsResult>.multi((listener) {
+      final cancelToken = CancelToken();
+      var cancelled = false;
+      listener.onCancel = () {
+        cancelled = true;
+        if (!cancelToken.isCancelled) cancelToken.cancel();
+      };
+      _load(query, page, pageSize, cancelToken).then((result) {
+        if (cancelled || !listener.hasListener) return;
+        listener.add(result);
+        listener.close();
+      });
+    });
+  }
+
+  Future<GetNewsResult> _load(
+    String query,
+    int page,
+    int pageSize,
+    CancelToken cancelToken,
+  ) async {
     try {
-      log('Get new page: ${query.trim()}, $page, $pageSize');
-      NewsResponseDto result = await _newsApi.getNewsByQuery(
+      final response = await _newsApi.getNewsByQuery(
         query.trim(),
         page,
         pageSize,
+        cancelToken,
       );
-      log('$result');
-      if (result.status == _responseStatusOk) {
-        yield GetNewsResult.success(
-          NewsModel(
-            result.articles?.map((newsItem) {
-                  return ArticleModel(
-                    newsItem.title,
-                    newsItem.description,
-                    _parsePublishedAt(newsItem.publishedAt),
-                    newsItem.urlToImage,
-                    newsItem.url,
-                    newsItem.source?.name,
-                  );
-                }).toList() ??
-                const [],
-          ),
 
-          result.totalResults ?? 0,
-        );
-      } else {
-        yield GetNewsResult.failure(_parseError(result));
-      }
+      return NewsResponseDtoMapper.map(response);
     } on DioException catch (e) {
-      log('$e');
+      if (CancelToken.isCancel(e)) {
+        return const GetNewsResult.failure(error: GetNewsError.unexpected());
+      }
       if (e.response?.data is Map) {
-        final result = NewsResponseDto.fromJson(
-          Map<String, dynamic>.from(e.response?.data),
-        );
-        yield GetNewsResult.failure(_parseError(result));
+        try {
+          final response = NewsResponseDto.fromJson(
+            Map<String, dynamic>.from(e.response?.data),
+          );
+          return NewsResponseDtoMapper.map(response);
+        } catch (e) {
+          return const GetNewsResult.failure(error: GetNewsError.unexpected());
+        }
       } else {
-        yield GetNewsResult.failure(GetNewsError.unexpected());
+        return const GetNewsResult.failure(error: GetNewsError.unexpected());
       }
     } catch (e) {
-      log('$e');
-      yield GetNewsResult.failure(GetNewsError.unexpected());
+      return const GetNewsResult.failure(error: GetNewsError.unexpected());
     }
-  }
-
-  DateTime? _parsePublishedAt(String? value) {
-    if (value == null || value.isEmpty) {
-      return null;
-    }
-    return DateTime.tryParse(value);
-  }
-
-  GetNewsError _parseError(NewsResponseDto response) {
-    return switch (response.code) {
-      'maximumResultsReached' => GetNewsError.maximumResultsReached(),
-      'apiKeyDisabled' => GetNewsError.apiKeyDisabled(),
-      'apiKeyExhausted' => GetNewsError.apiKeyExhausted(),
-      'apiKeyInvalid' => GetNewsError.apiKeyInvalid(),
-      'apiKeyMissing' => GetNewsError.apiKeyMissing(),
-      'rateLimited' => GetNewsError.rateLimited(),
-      _ => GetNewsError.unexpected(),
-    };
   }
 }

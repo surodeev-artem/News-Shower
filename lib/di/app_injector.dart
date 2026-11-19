@@ -6,6 +6,7 @@ import 'package:news_shower/data/source/remote/dio_factory.dart';
 import 'package:news_shower/data/source/remote/news_api.dart';
 import 'package:news_shower/domain/repository/news_repository.dart';
 import 'package:news_shower/feature/news_list/controller/news_list_controller.dart';
+import 'package:news_shower/feature/news_search/controller/news_search_controller.dart';
 
 abstract final class AppInjector {
   static final GetIt _getIt = GetIt.instance;
@@ -35,5 +36,7 @@ abstract final class AppInjector {
     _getIt.registerFactoryParam<NewsListController, String, void>(
       ((query, _) => NewsListController(_getIt(), query)),
     );
+
+    _getIt.registerFactory<NewsSearchController>(() => NewsSearchController());
   }
 }

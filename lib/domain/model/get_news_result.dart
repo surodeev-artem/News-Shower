@@ -1,16 +1,14 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:news_shower/domain/model/article_model.dart';
 import 'package:news_shower/domain/model/get_news_error.dart';
-import 'package:news_shower/domain/model/news_model.dart';
 
-sealed class GetNewsResult {
-  const GetNewsResult();
+part 'get_news_result.freezed.dart';
 
-  factory GetNewsResult.success(NewsModel news, int totalResult) =>
-      GetNewsResultSuccess(news, totalResult);
-  factory GetNewsResult.failure(GetNewsError error) =>
-      GetNewsResultFailure(error);
+@freezed
+sealed class GetNewsResult with _$GetNewsResult {
+  const factory GetNewsResult.success({required List<ArticleModel> articles}) =
+      GetNewsResultSuccess;
+
+  const factory GetNewsResult.failure({required GetNewsError error}) =
+      GetNewsResultFailure;
 }
-
-final class GetNewsResultSuccess(final NewsModel news, final int totalResult)
-    extends GetNewsResult;
-final class GetNewsResultFailure(final GetNewsError error)
-    extends GetNewsResult;

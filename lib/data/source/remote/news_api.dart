@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:news_shower/data/source/remote/dto/news_dto.dart';
+import 'package:news_shower/data/source/remote/dto/news_response_dto.dart';
 
 class NewsApi {
   final Dio _dio;
@@ -10,6 +10,7 @@ class NewsApi {
     String query,
     int pageIndex,
     int pageSize,
+    CancelToken cancelToken,
   ) async {
     final response = await _dio.get<Map<String, dynamic>>(
       '/everything',
@@ -19,6 +20,7 @@ class NewsApi {
         'page': pageIndex,
         'sortBy': 'publishedAt',
       },
+      cancelToken: cancelToken,
     );
     final data = response.data;
     if (data == null) {

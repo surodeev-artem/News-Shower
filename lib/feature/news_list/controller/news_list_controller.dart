@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:news_shower/domain/model/get_news_error.dart';
 import 'package:news_shower/domain/model/get_news_result.dart';
 import 'package:news_shower/domain/repository/news_repository.dart';
-import 'package:news_shower/feature/news_list/controller/news_list.dart';
-import 'package:news_shower/feature/news_list/controller/news_list_error.dart';
-import 'package:news_shower/feature/news_list/controller/news_list_state.dart';
+import 'package:news_shower/feature/news_list/controller/model/article.dart';
+import 'package:news_shower/feature/news_list/controller/model/article_model_mapper.dart';
+import 'package:news_shower/feature/news_list/controller/model/get_news_error_mapper.dart';
+import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
+import 'package:news_shower/feature/news_list/controller/model/news_list_state.dart';
 
 const int _pageSize = 20;
 
@@ -49,18 +50,11 @@ class NewsListController extends ChangeNotifier {
               {
                 final List<Article> previousArticles =
                     currentState is NewsListStateData
-                    ? currentState.data.news
+                    ? currentState.articles
                     : const [];
 
-                final currentArticles = resultModel.news.articles.map(
-                  (article) => Article(
-                    article.title,
-                    article.description,
-                    article.publishedAt,
-                    article.urlToImage,
-                    article.url,
-                    article.source,
-                  ),
+                final currentArticles = resultModel.articles.map(
+                  ArticleModelMapper.map,
                 );
 
                 final newArticles = [...previousArticles, ...currentArticles];
@@ -72,40 +66,24 @@ class NewsListController extends ChangeNotifier {
 
                 state = currentState is NewsListStateData
                     ? currentState.copyWith(
-                        data: NewsList(newArticles),
+                        articles: newArticles,
                         page: currentPage,
                         isLoadingMore: false,
                         loadMoreError: null,
-                        hasReachedEnd:
-                            resultModel.totalResult <= newArticles.length,
+                        hasReachedEnd: currentArticles.length < _pageSize,
                       )
                     : NewsListState.data(
-                        data: NewsList(newArticles),
+                        articles: newArticles,
                         page: currentPage,
                         isLoadingMore: false,
                         loadMoreError: null,
-                        hasReachedEnd:
-                            resultModel.totalResult <= newArticles.length,
+                        hasReachedEnd: currentArticles.length < _pageSize,
                       );
                 break;
               }
             case GetNewsResultFailure():
               {
-                final error = switch (resultModel.error) {
-                  GetNewsResultRateLimitedError() =>
-                    NewsListError.rateLimited(),
-                  GetNewsResultApiKeyDisabledError() =>
-                    NewsListError.apiKeyDisabled(),
-                  GetNewsResultApiKeyExhaustedError() =>
-                    NewsListError.apiKeyExhausted(),
-                  GetNewsResultApiKeyInvalidError() =>
-                    NewsListError.apiKeyInvalid(),
-                  GetNewsResultApiKeyMissingError() =>
-                    NewsListError.apiKeyMissing(),
-                  GetNewsResultUnexpectedError() => NewsListError.unexpected(),
-                  GetNewsResultMaximumResultsReachedError() =>
-                    NewsListError.maximumResultsReached(),
-                };
+                final error = GetNewsErrorMapper.map(resultModel.error);
 
                 state = currentState is NewsListStateData
                     ? currentState.copyWith(
