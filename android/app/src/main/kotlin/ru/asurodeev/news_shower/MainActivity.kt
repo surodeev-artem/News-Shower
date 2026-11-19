@@ -1,4 +1,4 @@
-package com.example.news_shower
+package ru.asurodeev.news_shower
 
 import io.flutter.embedding.android.FlutterActivity
 
