@@ -19,7 +19,7 @@ class NewsRepositoryImpl implements NewsRepository {
   }) {
     return Stream<GetNewsResult>.multi((listener) {
       final cancelToken = CancelToken();
-      var cancelled = false;
+      bool cancelled = false;
       listener.onCancel = () {
         cancelled = true;
         if (!cancelToken.isCancelled) cancelToken.cancel();
