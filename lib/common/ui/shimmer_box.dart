@@ -1,16 +1,31 @@
 import 'package:material_ui/material_ui.dart';
 
-class ShimmerBox extends StatelessWidget {
+class ShimmerBox extends StatefulWidget {
   final Animation<double> animation;
   final double width;
   final double height;
+  final VoidCallback? onShown;
+  final VoidCallback? onHidden;
 
   const ShimmerBox({
     super.key,
+    this.onShown,
+    this.onHidden,
     required this.width,
     required this.height,
     required this.animation,
   });
+
+  @override
+  State<ShimmerBox> createState() => _ShimmerBoxState();
+}
+
+class _ShimmerBoxState extends State<ShimmerBox> {
+  @override
+  void initState() {
+    super.initState();
+    widget.onShown?.call();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +33,12 @@ class ShimmerBox extends StatelessWidget {
     final highlight = Theme.of(context).colorScheme.surfaceContainerLow;
 
     return AnimatedBuilder(
-      animation: animation,
+      animation: widget.animation,
       builder: (_, child) {
         return ShaderMask(
           blendMode: BlendMode.srcATop,
           shaderCallback: (bounds) {
-            final slide = -2.2 + animation.value * 4.4;
+            final slide = -2.2 + widget.animation.value * 4.4;
             return LinearGradient(
               begin: Alignment(slide, -0.2),
               end: Alignment(slide + 1, 0.2),
@@ -37,8 +52,14 @@ class ShimmerBox extends StatelessWidget {
       },
       child: ColoredBox(
         color: base,
-        child: SizedBox(width: width, height: height),
+        child: SizedBox(width: widget.width, height: widget.height),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    widget.onHidden?.call();
+    super.dispose();
   }
 }

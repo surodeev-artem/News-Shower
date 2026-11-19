@@ -29,6 +29,8 @@ final class _NewsListScreenState extends State<NewsListScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _shimmer;
 
+  int _visibleShimmers = 0;
+
   @override
   void initState() {
     super.initState();
@@ -243,6 +245,8 @@ final class _NewsListScreenState extends State<NewsListScreen>
                           width: imageSide,
                           height: imageSide,
                           animation: _shimmer,
+                          onShown: _onShimmerShown,
+                          onHidden: _onShimmerHidden,
                         ),
                         errorWidget: (_, _, _) => Center(
                           child: SvgPicture.asset(
@@ -347,5 +351,15 @@ final class _NewsListScreenState extends State<NewsListScreen>
     _shimmer.stop();
     widget._controller.dispose();
     super.dispose();
+  }
+
+  void _onShimmerShown() {
+    _visibleShimmers++;
+    if (!_shimmer.isAnimating) _shimmer.repeat();
+  }
+
+  void _onShimmerHidden() {
+    _visibleShimmers--;
+    if (_visibleShimmers == 0) _shimmer.stop();
   }
 }

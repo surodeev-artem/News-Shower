@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:news_shower/feature/news_search/controller/news_search_effect.dart';
@@ -18,6 +19,7 @@ class NewsSearchController extends ChangeNotifier {
   }
 
   void onSearchButtonPressed(String query) {
+    log('onSearchButtonPressed with $query, $_listOpened');
     final normalized = query.trim();
     if (normalized.isEmpty || _listOpened) return;
     _listOpened = true;
@@ -33,6 +35,7 @@ class NewsSearchController extends ChangeNotifier {
   }
 
   void onReturnedFromList() {
+    log('onReturnedFromList');
     _listOpened = false;
   }
 }
