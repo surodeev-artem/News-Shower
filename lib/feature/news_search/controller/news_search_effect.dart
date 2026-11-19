@@ -1,12 +1,9 @@
-sealed class NewsSearchEffect {
-  const NewsSearchEffect();
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  factory NewsSearchEffect.goToList({required String query}) =>
-      NewsSearchEffectGoToList(query);
-}
+part 'news_search_effect.freezed.dart';
 
-final class NewsSearchEffectGoToList extends NewsSearchEffect {
-  final String query;
-
-  const NewsSearchEffectGoToList(this.query);
+@freezed
+sealed class NewsSearchEffect with _$NewsSearchEffect {
+  const factory NewsSearchEffect.goToList({required String query}) =
+      NewsSearchEffectGoToList;
 }
