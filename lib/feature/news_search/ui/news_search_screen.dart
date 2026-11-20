@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:news_shower/common/ui/app_localizations_ext.dart';
 import 'package:news_shower/feature/news_search/controller/news_search_controller.dart';
 import 'package:news_shower/feature/news_search/controller/model/news_search_effect.dart';
-import 'package:news_shower/navigation/app_routes.dart';
+import 'package:news_shower/navigation/router.dart';
 
 class NewsSearchScreen extends StatefulWidget {
   final NewsSearchController _controller;
@@ -90,15 +90,10 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
     switch (effect) {
       case NewsSearchEffectGoToList(:final query):
         if (!mounted) break;
-        Navigator.of(context)
-            .pushNamed(
-              AppRoutes.newsList,
-              arguments: NewsListArgs(query: query),
-            )
-            .then((_) {
-              if (!mounted) return;
-              widget._controller.onReturnedFromList();
-            });
+        NewsListLocation(query).push(context).then((_) {
+          if (!mounted) return;
+          widget._controller.onReturnedFromList();
+        });
     }
   }
 
