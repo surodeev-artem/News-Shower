@@ -11,6 +11,7 @@ import 'package:news_shower/feature/news_list/controller/model/news_list_effect.
 import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_item.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_state.dart';
+import 'package:rxdart/rxdart.dart';
 
 const int _pageSize = 20;
 
@@ -25,91 +26,14 @@ class NewsListController extends ChangeNotifier {
   NewsListState _state = const NewsListState.init();
   NewsListState get state => _state;
 
-  StreamSubscription<GetNewsResult>? _subscription;
+  final _loadRequests = PublishSubject<void>();
+  late final StreamSubscription<GetNewsResult> _loads;
 
-  NewsListController(this._newsRepository, this._linkLauncher, this._query);
-
-  void load() {
-    final currentState = state;
-
-    if (currentState is NewsListStateLoading) return;
-    if (currentState is NewsListStateData &&
-        (currentState.isLoadingMore || currentState.hasReachedEnd)) {
-      return;
-    }
-
-    _state = currentState is NewsListStateData
-        ? currentState.copyWith(isLoadingMore: true, loadMoreError: null)
-        : const NewsListState.loading();
-    notifyListeners();
-
-    final currentPage = currentState is NewsListStateData
-        ? currentState.page + 1
-        : 1;
-
-    _subscription?.cancel();
-    _subscription = _newsRepository
-        .getNewsByQuery(query: _query, page: currentPage, pageSize: _pageSize)
-        .listen((resultModel) {
-          switch (resultModel) {
-            case GetNewsResultSuccess():
-              {
-                final List<Article> previousArticles =
-                    currentState is NewsListStateData
-                    ? currentState.articles
-                    : const [];
-
-                final currentArticles = resultModel.articles.map(
-                  ArticleModelMapper.map,
-                );
-
-                final newArticles = [...previousArticles, ...currentArticles];
-
-                if (newArticles.isEmpty) {
-                  _state = const NewsListState.empty();
-                  break;
-                }
-
-                final newListItems = groupByDate(newArticles);
-                _state = currentState is NewsListStateData
-                    ? currentState.copyWith(
-                        articles: newArticles,
-                        items: newListItems,
-                        page: currentPage,
-                        isLoadingMore: false,
-                        loadMoreError: null,
-                        hasReachedEnd: currentArticles.length < _pageSize,
-                      )
-                    : NewsListState.data(
-                        articles: newArticles,
-                        items: newListItems,
-                        page: currentPage,
-                        isLoadingMore: false,
-                        loadMoreError: null,
-                        hasReachedEnd: currentArticles.length < _pageSize,
-                      );
-                break;
-              }
-            case GetNewsResultFailure():
-              {
-                final error = GetNewsErrorMapper.map(resultModel.error);
-
-                _state = currentState is NewsListStateData
-                    ? currentState.copyWith(
-                        isLoadingMore: false,
-                        loadMoreError: error,
-                        hasReachedEnd:
-                            error is NewsListErrorMaximumResultsReached,
-                      )
-                    : NewsListState.failure(error: error);
-
-                break;
-              }
-          }
-
-          notifyListeners();
-        });
+  NewsListController(this._newsRepository, this._linkLauncher, this._query) {
+    _loads = _loadRequests.exhaustMap(_startLoad).listen(_applyState);
   }
+
+  void load() => _loadRequests.add(null);
 
   Future<void> onArticlePressed(String? articleUrl) async {
     final url = articleUrl;
@@ -134,7 +58,88 @@ class NewsListController extends ChangeNotifier {
     }
   }
 
-  List<NewsListItem> groupByDate(List<Article> articles) {
+  Stream<GetNewsResult> _startLoad(void _) {
+    final currentState = state;
+    if (currentState is NewsListStateData && currentState.hasReachedEnd) {
+      return const Stream.empty();
+    }
+
+    _state = currentState is NewsListStateData
+        ? currentState.copyWith(isLoadingMore: true, loadMoreError: null)
+        : const NewsListState.loading();
+    notifyListeners();
+
+    final currentPage = currentState is NewsListStateData
+        ? currentState.page + 1
+        : 1;
+
+    return _newsRepository.getNewsByQuery(
+      query: _query,
+      page: currentPage,
+      pageSize: _pageSize,
+    );
+  }
+
+  void _applyState(GetNewsResult result) {
+    final currentState = state;
+
+    final previousArticles = currentState is NewsListStateData
+        ? currentState.articles
+        : const <Article>[];
+    final currentPage = currentState is NewsListStateData
+        ? currentState.page + 1
+        : 1;
+
+    switch (result) {
+      case GetNewsResultSuccess():
+        {
+          final currentArticles = result.articles.map(ArticleModelMapper.map);
+
+          final newArticles = [...previousArticles, ...currentArticles];
+
+          if (newArticles.isEmpty) {
+            _state = const NewsListState.empty();
+            break;
+          }
+
+          final newListItems = _groupByDate(newArticles);
+          _state = currentState is NewsListStateData
+              ? currentState.copyWith(
+                  articles: newArticles,
+                  items: newListItems,
+                  page: currentPage,
+                  isLoadingMore: false,
+                  loadMoreError: null,
+                  hasReachedEnd: currentArticles.length < _pageSize,
+                )
+              : NewsListState.data(
+                  articles: newArticles,
+                  items: newListItems,
+                  page: currentPage,
+                  isLoadingMore: false,
+                  loadMoreError: null,
+                  hasReachedEnd: currentArticles.length < _pageSize,
+                );
+          break;
+        }
+      case GetNewsResultFailure():
+        {
+          final error = GetNewsErrorMapper.map(result.error);
+
+          _state = currentState is NewsListStateData
+              ? currentState.copyWith(
+                  isLoadingMore: false,
+                  loadMoreError: error,
+                  hasReachedEnd: error is NewsListErrorMaximumResultsReached,
+                )
+              : NewsListState.failure(error: error);
+
+          break;
+        }
+    }
+  }
+
+  List<NewsListItem> _groupByDate(List<Article> articles) {
     final items = <NewsListItem>[];
     DateTime? currentDay;
     var isUnknownGroupOpen = false;
@@ -166,7 +171,8 @@ class NewsListController extends ChangeNotifier {
 
   @override
   void dispose() {
-    _subscription?.cancel();
+    _loads.cancel();
+    _loadRequests.close();
     _effectController.close();
     super.dispose();
   }
