@@ -1,9 +1,11 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:news_shower/common/ui/app_localizations_ext.dart';
 
 class SearchAppBar extends StatefulWidget {
+  final double _viewportHeight;
   final bool _isInitial;
   final bool _isSearchButtonEnabled;
   final void Function(String query) _onSearchQueryChanged;
@@ -11,6 +13,7 @@ class SearchAppBar extends StatefulWidget {
 
   const SearchAppBar({
     super.key,
+    required this._viewportHeight,
     required this._isInitial,
     required this._isSearchButtonEnabled,
     required this._onSearchQueryChanged,
@@ -41,10 +44,13 @@ class _SearchAppBarState extends State<SearchAppBar>
     return AnimatedBuilder(
       animation: _move,
       builder: (_, _) {
-        final controlsHeight = 72.0;
-        final media = MediaQuery.of(context);
-        final viewport = media.size.height - media.viewPadding.vertical;
-        final maxExtent = lerpDouble(viewport, controlsHeight, _move.value)!;
+        const controlsHeight = 72.0;
+        final expandedExtent = max(widget._viewportHeight, controlsHeight);
+        final maxExtent = lerpDouble(
+          expandedExtent,
+          controlsHeight,
+          _move.value,
+        )!;
 
         return SliverPersistentHeader(
           pinned: false,
@@ -135,13 +141,19 @@ class _SearchAppBarDelegate extends SliverPersistentHeaderDelegate {
                       textInputAction: TextInputAction.search,
                       controller: textController,
                       onChanged: onSearchQueryChanged,
-                      onSubmitted: onSearchButtonPressed,
+                      onSubmitted: (value) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        onSearchButtonPressed(value);
+                      },
                     ),
                   ),
                   const SizedBox(width: 8),
                   IconButton.filled(
                     onPressed: isSearchButtonEnabled
-                        ? () => onSearchButtonPressed(textController.text)
+                        ? () {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            onSearchButtonPressed(textController.text);
+                          }
                         : null,
                     icon: const Icon(Icons.search),
                     style: IconButton.styleFrom(

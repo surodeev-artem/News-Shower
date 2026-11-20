@@ -35,28 +35,37 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
     return Scaffold(
       body: SafeArea(
         bottom: false,
-        child: ListenableBuilder(
-          listenable: widget._controller,
-          builder: (_, _) => CustomScrollView(
-            physics: widget._controller.state.listState is NewsListStateInit
-                ? const NeverScrollableScrollPhysics()
-                : const ClampingScrollPhysics(),
-            slivers: [
-              SearchAppBar(
-                isInitial:
-                    widget._controller.state.listState is NewsListStateInit,
-                isSearchButtonEnabled:
-                    widget._controller.state.isSearchButtonEnabled,
-                onSearchQueryChanged: widget._controller.onSearchQueryChanged,
-                onSearchButtonPressed: widget._controller.onSearchButtonPressed,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final bottomPadding = MediaQuery.paddingOf(context).bottom;
+            final viewportHeight = constraints.maxHeight - bottomPadding;
+            return ListenableBuilder(
+              listenable: widget._controller,
+              builder: (_, _) => CustomScrollView(
+                physics: widget._controller.state.listState is NewsListStateInit
+                    ? const NeverScrollableScrollPhysics()
+                    : const ClampingScrollPhysics(),
+                slivers: [
+                  SearchAppBar(
+                    viewportHeight: viewportHeight,
+                    isInitial:
+                        widget._controller.state.listState is NewsListStateInit,
+                    isSearchButtonEnabled:
+                        widget._controller.state.isSearchButtonEnabled,
+                    onSearchQueryChanged:
+                        widget._controller.onSearchQueryChanged,
+                    onSearchButtonPressed:
+                        widget._controller.onSearchButtonPressed,
+                  ),
+                  SearchList(
+                    state: widget._controller.state.listState,
+                    load: widget._controller.load,
+                    onArticlePressed: widget._controller.onArticlePressed,
+                  ),
+                ],
               ),
-              SearchList(
-                state: widget._controller.state.listState,
-                load: widget._controller.load,
-                onArticlePressed: widget._controller.onArticlePressed,
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
