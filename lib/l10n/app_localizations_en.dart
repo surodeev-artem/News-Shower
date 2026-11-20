@@ -10,13 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get searchTitle => 'Search';
-
-  @override
   String get queryPlaceholder => 'Your query...';
-
-  @override
-  String get searchButton => 'Find';
 
   @override
   String get newsNotFound => 'News not found';

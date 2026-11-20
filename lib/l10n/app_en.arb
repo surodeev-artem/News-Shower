@@ -1,7 +1,5 @@
 {
-    "searchTitle": "Search",
     "queryPlaceholder": "Your query...",
-    "searchButton": "Find",
     "newsNotFound": "News not found",
     "errorButton": "Try again",
     "errorTooManyRequest": "Too many requests, please try again later",

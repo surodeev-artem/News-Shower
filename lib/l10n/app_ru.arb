@@ -1,7 +1,5 @@
 {
-    "searchTitle": "Поиск",
     "queryPlaceholder": "Ваш запрос...",
-    "searchButton": "Найти",
     "newsNotFound": "Новостей не найдено",
     "errorButton": "Попробовать снова",
     "errorTooManyRequest": "Слишком много запросов, попробуйте позже",

@@ -24,7 +24,7 @@ class NewsSearchController extends ChangeNotifier {
   late final Stream<NewsSearchEffect> effect = _effectController.stream;
 
   final _loadRequests = PublishSubject<void>();
-  late final StreamSubscription<GetNewsResult> _loads;
+  late StreamSubscription<GetNewsResult> _loads;
 
   NewsSearchState _state = const NewsSearchState(
     query: '',
@@ -34,7 +34,7 @@ class NewsSearchController extends ChangeNotifier {
   NewsSearchState get state => _state;
 
   NewsSearchController(this._newsRepository, this._linkLauncher) {
-    _loads = _loadRequests.exhaustMap(_startLoad).listen(_applyState);
+    _loads = _subscribeLoads();
   }
 
   void onSearchQueryChanged(String query) {
@@ -55,6 +55,10 @@ class NewsSearchController extends ChangeNotifier {
       listState: const NewsListState.init(),
     );
     notifyListeners();
+
+    _loads.cancel();
+    _loads = _subscribeLoads();
+
     load();
   }
 
@@ -82,6 +86,9 @@ class NewsSearchController extends ChangeNotifier {
       _effectController.add(const NewsSearchEffect.articleUrlIsNotValid());
     }
   }
+
+  StreamSubscription<GetNewsResult> _subscribeLoads() =>
+      _loadRequests.exhaustMap(_startLoad).listen(_applyState);
 
   Stream<GetNewsResult> _startLoad(void _) {
     final currentState = state;

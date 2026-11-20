@@ -98,23 +98,11 @@ abstract class AppLocalizations {
     Locale('ru'),
   ];
 
-  /// No description provided for @searchTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Search'**
-  String get searchTitle;
-
   /// No description provided for @queryPlaceholder.
   ///
   /// In en, this message translates to:
   /// **'Your query...'**
   String get queryPlaceholder;
-
-  /// No description provided for @searchButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Find'**
-  String get searchButton;
 
   /// No description provided for @newsNotFound.
   ///

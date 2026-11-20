@@ -10,13 +10,7 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get searchTitle => 'Поиск';
-
-  @override
   String get queryPlaceholder => 'Ваш запрос...';
-
-  @override
-  String get searchButton => 'Найти';
 
   @override
   String get newsNotFound => 'Новостей не найдено';
