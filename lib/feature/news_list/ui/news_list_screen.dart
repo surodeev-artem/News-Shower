@@ -158,53 +158,41 @@ final class _NewsListScreenState extends State<NewsListScreen>
     final hasFooter = !state.hasReachedEnd || state.loadMoreError != null;
 
     return SizedBox.expand(
-      child: NotificationListener<ScrollEndNotification>(
-        onNotification: (notification) {
-          if (state.loadMoreError != null || state.isLoadingMore) return false;
-
-          final metrics = notification.metrics;
-          final atEnd = metrics.pixels >= metrics.maxScrollExtent;
-          if (atEnd) {
-            widget._controller.load();
-          }
-          return false;
-        },
-        child: ListView.builder(
-          itemCount: state.articles.length + (hasFooter ? 1 : 0),
-          padding: EdgeInsets.only(
-            left: padding,
-            top: padding,
-            right: padding,
-            bottom: hasFooter ? 0 : padding + bottomInset,
-          ),
-          itemBuilder: (_, index) {
-            if (index == state.articles.length) {
-              final shouldLoad =
-                  !state.hasReachedEnd &&
-                  !state.isLoadingMore &&
-                  state.loadMoreError == null;
-              if (shouldLoad) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted) widget._controller.load();
-                });
-              }
-              return _footer(state);
-            }
-
-            return _article(
-              key: ValueKey(
-                state.articles[index].url?.isNotEmpty == true
-                    ? state.articles[index].url
-                    : Object.hash(
-                        state.articles[index].title,
-                        state.articles[index].publishedAt,
-                        index,
-                      ),
-              ),
-              article: state.articles[index],
-            );
-          },
+      child: ListView.builder(
+        itemCount: state.articles.length + (hasFooter ? 1 : 0),
+        padding: EdgeInsets.only(
+          left: padding,
+          top: padding,
+          right: padding,
+          bottom: hasFooter ? 0 : padding + bottomInset,
         ),
+        itemBuilder: (_, index) {
+          if (index == state.articles.length) {
+            final shouldLoad =
+                !state.hasReachedEnd &&
+                !state.isLoadingMore &&
+                state.loadMoreError == null;
+            if (shouldLoad) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) widget._controller.load();
+              });
+            }
+            return _footer(state);
+          }
+
+          return _article(
+            key: ValueKey(
+              state.articles[index].url?.isNotEmpty == true
+                  ? state.articles[index].url
+                  : Object.hash(
+                      state.articles[index].title,
+                      state.articles[index].publishedAt,
+                      index,
+                    ),
+            ),
+            article: state.articles[index],
+          );
+        },
       ),
     );
   }
