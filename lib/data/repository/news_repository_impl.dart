@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:news_shower/data/source/remote/dto/news_response_dto.dart';
 import 'package:news_shower/data/source/remote/dto/news_response_dto_mapper.dart';
@@ -24,6 +26,7 @@ class NewsRepositoryImpl implements NewsRepository {
         cancelled = true;
         if (!cancelToken.isCancelled) cancelToken.cancel();
       };
+      log('getNewsByQuery');
       _load(query, page, pageSize, cancelToken).then((result) {
         if (cancelled || !listener.hasListener) return;
         listener.add(result);

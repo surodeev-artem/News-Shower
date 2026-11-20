@@ -1,5 +1,5 @@
 import 'package:news_shower/domain/model/article_model.dart';
-import 'package:news_shower/feature/news_list/controller/model/article.dart';
+import 'package:news_shower/feature/news_search/controller/model/article.dart';
 
 final class ArticleModelMapper {
   static Article map(ArticleModel model) {

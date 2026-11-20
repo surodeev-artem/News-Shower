@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NewsSearchState {
 
- bool get isSearchButtonEnabled;
+ String get query; bool get isSearchButtonEnabled; NewsListState get listState;
 /// Create a copy of NewsSearchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,20 +27,20 @@ $NewsSearchStateCopyWith<NewsSearchState> get copyWith => _$NewsSearchStateCopyW
 @override
 bool operator ==(Object other) {
   final _this = this as NewsSearchState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsSearchState&&(identical(other.isSearchButtonEnabled, _this.isSearchButtonEnabled) || other.isSearchButtonEnabled == _this.isSearchButtonEnabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsSearchState&&(identical(other.query, _this.query) || other.query == _this.query)&&(identical(other.isSearchButtonEnabled, _this.isSearchButtonEnabled) || other.isSearchButtonEnabled == _this.isSearchButtonEnabled)&&(identical(other.listState, _this.listState) || other.listState == _this.listState));
 }
 
 
 @override
 int get hashCode {
   final _this = this as NewsSearchState;
-  return Object.hash(runtimeType,_this.isSearchButtonEnabled);
+  return Object.hash(runtimeType,_this.query,_this.isSearchButtonEnabled,_this.listState);
 }
 
 @override
 String toString() {
   final _this = this as NewsSearchState;
-  return 'NewsSearchState(isSearchButtonEnabled: ${_this.isSearchButtonEnabled})';
+  return 'NewsSearchState(query: ${_this.query}, isSearchButtonEnabled: ${_this.isSearchButtonEnabled}, listState: ${_this.listState})';
 }
 
 
@@ -51,11 +51,11 @@ abstract mixin class $NewsSearchStateCopyWith<$Res>  {
   factory $NewsSearchStateCopyWith(NewsSearchState value, $Res Function(NewsSearchState) _then) = _$NewsSearchStateCopyWithImpl;
 @useResult
 $Res call({
- bool isSearchButtonEnabled
+ String query, bool isSearchButtonEnabled, NewsListState listState
 });
 
 
-
+$NewsListStateCopyWith<$Res> get listState;
 
 }
 /// @nodoc
@@ -68,13 +68,24 @@ class _$NewsSearchStateCopyWithImpl<$Res>
 
 /// Create a copy of NewsSearchState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isSearchButtonEnabled = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? query = null,Object? isSearchButtonEnabled = null,Object? listState = null,}) {
   return _then(NewsSearchState(
-isSearchButtonEnabled: null == isSearchButtonEnabled ? _self.isSearchButtonEnabled : isSearchButtonEnabled // ignore: cast_nullable_to_non_nullable
-as bool,
+query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
+as String,isSearchButtonEnabled: null == isSearchButtonEnabled ? _self.isSearchButtonEnabled : isSearchButtonEnabled // ignore: cast_nullable_to_non_nullable
+as bool,listState: null == listState ? _self.listState : listState // ignore: cast_nullable_to_non_nullable
+as NewsListState,
   ));
 }
-
+/// Create a copy of NewsSearchState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$NewsListStateCopyWith<$Res> get listState {
+  
+  return $NewsListStateCopyWith<$Res>(_self.listState, (value) {
+    return _then(_self.copyWith(listState: value));
+  });
+}
 }
 
 
@@ -156,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isSearchButtonEnabled)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  bool isSearchButtonEnabled,  NewsListState listState)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NewsSearchState() when $default != null:
-return $default(_that.isSearchButtonEnabled);case _:
+return $default(_that.query,_that.isSearchButtonEnabled,_that.listState);case _:
   return orElse();
 
 }
@@ -177,10 +188,10 @@ return $default(_that.isSearchButtonEnabled);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isSearchButtonEnabled)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  bool isSearchButtonEnabled,  NewsListState listState)  $default,) {final _that = this;
 switch (_that) {
 case _NewsSearchState():
-return $default(_that.isSearchButtonEnabled);case _:
+return $default(_that.query,_that.isSearchButtonEnabled,_that.listState);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +208,10 @@ return $default(_that.isSearchButtonEnabled);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isSearchButtonEnabled)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  bool isSearchButtonEnabled,  NewsListState listState)?  $default,) {final _that = this;
 switch (_that) {
 case _NewsSearchState() when $default != null:
-return $default(_that.isSearchButtonEnabled);case _:
+return $default(_that.query,_that.isSearchButtonEnabled,_that.listState);case _:
   return null;
 
 }
@@ -212,10 +223,12 @@ return $default(_that.isSearchButtonEnabled);case _:
 
 
 class _NewsSearchState implements NewsSearchState {
-  const _NewsSearchState({required this.isSearchButtonEnabled});
+  const _NewsSearchState({required this.query, required this.isSearchButtonEnabled, required this.listState});
   
 
+@override final  String query;
 @override final  bool isSearchButtonEnabled;
+@override final  NewsListState listState;
 
 /// Create a copy of NewsSearchState
 /// with the given fields replaced by the non-null parameter values.
@@ -227,18 +240,18 @@ _$NewsSearchStateCopyWith<_NewsSearchState> get copyWith => __$NewsSearchStateCo
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewsSearchState&&(identical(other.isSearchButtonEnabled, isSearchButtonEnabled) || other.isSearchButtonEnabled == isSearchButtonEnabled));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewsSearchState&&(identical(other.query, query) || other.query == query)&&(identical(other.isSearchButtonEnabled, isSearchButtonEnabled) || other.isSearchButtonEnabled == isSearchButtonEnabled)&&(identical(other.listState, listState) || other.listState == listState));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,isSearchButtonEnabled);
+    return Object.hash(runtimeType,query,isSearchButtonEnabled,listState);
 }
 
 @override
 String toString() {
-    return 'NewsSearchState(isSearchButtonEnabled: $isSearchButtonEnabled)';
+    return 'NewsSearchState(query: $query, isSearchButtonEnabled: $isSearchButtonEnabled, listState: $listState)';
 }
 
 
@@ -249,11 +262,11 @@ abstract mixin class _$NewsSearchStateCopyWith<$Res> implements $NewsSearchState
   factory _$NewsSearchStateCopyWith(_NewsSearchState value, $Res Function(_NewsSearchState) _then) = __$NewsSearchStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isSearchButtonEnabled
+ String query, bool isSearchButtonEnabled, NewsListState listState
 });
 
 
-
+@override $NewsListStateCopyWith<$Res> get listState;
 
 }
 /// @nodoc
@@ -266,14 +279,25 @@ class __$NewsSearchStateCopyWithImpl<$Res>
 
 /// Create a copy of NewsSearchState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isSearchButtonEnabled = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? query = null,Object? isSearchButtonEnabled = null,Object? listState = null,}) {
   return _then(_NewsSearchState(
-isSearchButtonEnabled: null == isSearchButtonEnabled ? _self.isSearchButtonEnabled : isSearchButtonEnabled // ignore: cast_nullable_to_non_nullable
-as bool,
+query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
+as String,isSearchButtonEnabled: null == isSearchButtonEnabled ? _self.isSearchButtonEnabled : isSearchButtonEnabled // ignore: cast_nullable_to_non_nullable
+as bool,listState: null == listState ? _self.listState : listState // ignore: cast_nullable_to_non_nullable
+as NewsListState,
   ));
 }
 
-
+/// Create a copy of NewsSearchState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$NewsListStateCopyWith<$Res> get listState {
+  
+  return $NewsListStateCopyWith<$Res>(_self.listState, (value) {
+    return _then(_self.copyWith(listState: value));
+  });
+}
 }
 
 // dart format on

@@ -1,37 +1,32 @@
-import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:news_shower/common/ui/app_localizations_ext.dart';
 import 'package:news_shower/common/ui/shimmer_box.dart';
-import 'package:news_shower/feature/news_list/controller/model/article.dart';
-import 'package:news_shower/feature/news_list/controller/model/news_list_effect.dart';
-import 'package:news_shower/feature/news_list/controller/model/news_list_item.dart';
-import 'package:news_shower/feature/news_list/controller/news_list_controller.dart';
-import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
-import 'package:news_shower/feature/news_list/controller/model/news_list_state.dart';
+import 'package:news_shower/feature/news_search/controller/model/article.dart';
+import 'package:news_shower/feature/news_search/controller/model/news_list_error.dart';
+import 'package:news_shower/feature/news_search/controller/model/news_list_item.dart';
+import 'package:news_shower/feature/news_search/controller/model/news_list_state.dart';
 
-final class NewsListScreen extends StatefulWidget {
-  final String query;
-  final NewsListController _controller;
+class SearchList extends StatefulWidget {
+  final NewsListState _state;
+  final VoidCallback _load;
+  final void Function(String? url) _onArticlePressed;
 
-  const NewsListScreen({
+  const SearchList({
     super.key,
-    required this._controller,
-    required this.query,
+    required this._state,
+    required this._load,
+    required this._onArticlePressed,
   });
 
   @override
-  State<NewsListScreen> createState() {
-    return _NewsListScreenState();
-  }
+  State<SearchList> createState() => _SearchListState();
 }
 
-final class _NewsListScreenState extends State<NewsListScreen>
+class _SearchListState extends State<SearchList>
     with SingleTickerProviderStateMixin {
   late final AnimationController _shimmer;
-  late final StreamSubscription<NewsListEffect> _effects;
 
   int _visibleShimmers = 0;
 
@@ -42,28 +37,27 @@ final class _NewsListScreenState extends State<NewsListScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    _effects = widget._controller.effect.listen(_onEffect);
-    widget._controller.load();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.query)),
-      body: ListenableBuilder(
-        listenable: widget._controller,
-        builder: (_, _) {
-          NewsListState state = widget._controller.state;
-          return switch (state) {
-            NewsListStateInit() => _loading(),
-            NewsListStateLoading() => _loading(),
-            NewsListStateEmpty() => _emptyList(),
-            NewsListStateData() => _success(state: state),
-            NewsListStateFailure() => _failure(error: state.error),
-          };
-        },
+    NewsListState state = widget._state;
+    return switch (state) {
+      NewsListStateInit() => const SliverToBoxAdapter(child: SizedBox.shrink()),
+      NewsListStateLoading() => SliverFillRemaining(
+        hasScrollBody: false,
+        child: _loading(),
       ),
-    );
+      NewsListStateEmpty() => SliverFillRemaining(
+        hasScrollBody: false,
+        child: _emptyList(),
+      ),
+      NewsListStateData() => _success(state: state),
+      NewsListStateFailure() => SliverFillRemaining(
+        hasScrollBody: false,
+        child: _failure(error: state.error),
+      ),
+    };
   }
 
   Widget _loading() {
@@ -103,7 +97,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
-          _retryButton(onPressed: () => widget._controller.load()),
+          _retryButton(onPressed: () => widget._load()),
         ],
         NewsListErrorApiKeyDisabled() => [
           Text(
@@ -140,7 +134,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
-          _retryButton(onPressed: () => widget._controller.load()),
+          _retryButton(onPressed: () => widget._load()),
         ],
         NewsListErrorMaximumResultsReached() => [
           Text(
@@ -158,24 +152,25 @@ final class _NewsListScreenState extends State<NewsListScreen>
     final padding = 8.0;
     final hasFooter = !state.hasReachedEnd || state.loadMoreError != null;
 
-    return SizedBox.expand(
-      child: ListView.builder(
+    return SliverPadding(
+      padding: EdgeInsets.only(
+        left: padding,
+        top: padding,
+        right: padding,
+        bottom: hasFooter ? 0 : padding + bottomInset,
+      ),
+      sliver: SliverList.builder(
         itemCount: state.items.length + (hasFooter ? 1 : 0),
-        padding: EdgeInsets.only(
-          left: padding,
-          top: padding,
-          right: padding,
-          bottom: hasFooter ? 0 : padding + bottomInset,
-        ),
         itemBuilder: (_, index) {
           if (index == state.items.length) {
             final shouldLoad =
                 !state.hasReachedEnd &&
                 !state.isLoadingMore &&
                 state.loadMoreError == null;
+
             if (shouldLoad) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted) widget._controller.load();
+                if (mounted) widget._load();
               });
             }
             return _footer(state);
@@ -269,7 +264,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
       key: key,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => widget._controller.onArticlePressed(article.url),
+        onTap: () => widget._onArticlePressed(article.url),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -384,18 +379,6 @@ final class _NewsListScreenState extends State<NewsListScreen>
     if (_visibleShimmers == 0) _shimmer.stop();
   }
 
-  void _onEffect(NewsListEffect effect) {
-    switch (effect) {
-      case NewsListEffectArticleUrlIsNotValid():
-        if (!mounted) return;
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(content: Text(context.l10n.errorArticleUrlInvalid)),
-          );
-    }
-  }
-
   String _dateTitle(DateTime date) {
     final today = DateUtils.dateOnly(DateTime.now());
     if (date == today) return context.l10n.today;
@@ -408,8 +391,6 @@ final class _NewsListScreenState extends State<NewsListScreen>
   @override
   void dispose() {
     _shimmer.stop();
-    _effects.cancel();
-    widget._controller.dispose();
     super.dispose();
   }
 }

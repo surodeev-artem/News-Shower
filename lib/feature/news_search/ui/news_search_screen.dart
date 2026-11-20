@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:news_shower/common/ui/app_localizations_ext.dart';
-import 'package:news_shower/feature/news_search/controller/news_search_controller.dart';
+import 'package:news_shower/feature/news_search/controller/model/news_list_state.dart';
 import 'package:news_shower/feature/news_search/controller/model/news_search_effect.dart';
-import 'package:news_shower/navigation/router.dart';
+import 'package:news_shower/feature/news_search/controller/news_search_controller.dart';
+import 'package:news_shower/feature/news_search/ui/components/search_app_bar.dart';
+import 'package:news_shower/feature/news_search/ui/components/search_list.dart';
 
 class NewsSearchScreen extends StatefulWidget {
   final NewsSearchController _controller;
@@ -32,55 +34,29 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverFillRemaining(
-              hasScrollBody: true,
-              child: Padding(
-                padding: const EdgeInsetsGeometry.symmetric(horizontal: 32),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      context.l10n.searchTitle,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _textEditingController,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.queryPlaceholder,
-                        border: const OutlineInputBorder(),
-                      ),
-                      onChanged: (value) =>
-                          widget._controller.onSearchQueryChanged(value),
-                      textInputAction: TextInputAction.search,
-                      onSubmitted: (value) =>
-                          widget._controller.onSearchButtonPressed(value),
-                    ),
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ListenableBuilder(
-                        listenable: widget._controller,
-                        builder: (_, _) => FilledButton(
-                          onPressed:
-                              widget._controller.state.isSearchButtonEnabled
-                              ? () {
-                                  widget._controller.onSearchButtonPressed(
-                                    _textEditingController.text,
-                                  );
-                                }
-                              : null,
-                          child: Text(context.l10n.searchButton),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+        bottom: false,
+        child: ListenableBuilder(
+          listenable: widget._controller,
+          builder: (_, _) => CustomScrollView(
+            physics: widget._controller.state.listState is NewsListStateInit
+                ? const NeverScrollableScrollPhysics()
+                : const ClampingScrollPhysics(),
+            slivers: [
+              SearchAppBar(
+                isInitial:
+                    widget._controller.state.listState is NewsListStateInit,
+                isSearchButtonEnabled:
+                    widget._controller.state.isSearchButtonEnabled,
+                onSearchQueryChanged: widget._controller.onSearchQueryChanged,
+                onSearchButtonPressed: widget._controller.onSearchButtonPressed,
               ),
-            ),
-          ],
+              SearchList(
+                state: widget._controller.state.listState,
+                load: widget._controller.load,
+                onArticlePressed: widget._controller.onArticlePressed,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -88,12 +64,13 @@ class _NewsSearchScreenState extends State<NewsSearchScreen> {
 
   void _onEffect(NewsSearchEffect effect) {
     switch (effect) {
-      case NewsSearchEffectGoToList(:final query):
-        if (!mounted) break;
-        NewsListLocation(query).push(context).then((_) {
-          if (!mounted) return;
-          widget._controller.onReturnedFromList();
-        });
+      case NewsSearchEffectArticleUrlIsNotValid():
+        if (!mounted) return;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text(context.l10n.errorArticleUrlInvalid)),
+          );
     }
   }
 

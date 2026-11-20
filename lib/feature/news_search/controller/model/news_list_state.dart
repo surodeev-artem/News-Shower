@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:news_shower/feature/news_list/controller/model/article.dart';
-import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
-import 'package:news_shower/feature/news_list/controller/model/news_list_item.dart';
+import 'package:news_shower/feature/news_search/controller/model/article.dart';
+import 'package:news_shower/feature/news_search/controller/model/news_list_error.dart';
+import 'package:news_shower/feature/news_search/controller/model/news_list_item.dart';
 
 part 'news_list_state.freezed.dart';
 
