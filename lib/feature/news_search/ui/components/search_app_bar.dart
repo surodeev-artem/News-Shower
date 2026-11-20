@@ -122,7 +122,7 @@ class _SearchAppBarDelegate extends SliverPersistentHeaderDelegate {
                   Expanded(
                     child: TextField(
                       decoration: InputDecoration(
-                        labelText: context.l10n.queryPlaceholder,
+                        hintText: context.l10n.queryPlaceholder,
                         border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),

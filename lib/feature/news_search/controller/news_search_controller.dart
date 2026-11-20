@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:news_shower/common/domain/link_launcher.dart';
@@ -85,7 +84,6 @@ class NewsSearchController extends ChangeNotifier {
   }
 
   Stream<GetNewsResult> _startLoad(void _) {
-    log('_startLoad');
     final currentState = state;
     final currentListState = state.listState;
 
