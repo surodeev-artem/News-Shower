@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:news_shower/domain/model/get_news_error.dart';
-import 'package:news_shower/feature/news_list/controller/model/get_news_error_mapper.dart';
-import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
+import 'package:news_shower/feature/news_search/controller/model/get_news_error_mapper.dart';
+import 'package:news_shower/feature/news_search/controller/model/news_list_error.dart';
 
 void main() {
   group('Maps GetNewsError to NewsListError', () {

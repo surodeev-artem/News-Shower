@@ -255,7 +255,7 @@ class _SearchListState extends State<SearchList>
 
     const imageSide = 128.0;
     const gap = 16.0;
-    final hasImage = imageUrl != null && imageUrl.isNotEmpty;
+    final hasImage = imageUrl != null && imageUrl.trim().isNotEmpty;
 
     final cacheSide = (imageSide * MediaQuery.devicePixelRatioOf(context))
         .round();
@@ -274,7 +274,7 @@ class _SearchListState extends State<SearchList>
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: CachedNetworkImage(
-                    imageUrl: imageUrl,
+                    imageUrl: imageUrl.trim(),
                     width: imageSide,
                     height: imageSide,
                     memCacheWidth: cacheSide,

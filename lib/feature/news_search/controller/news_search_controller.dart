@@ -39,12 +39,15 @@ class NewsSearchController extends ChangeNotifier {
   }
 
   void onSearchQueryChanged(String query) {
-    _state = state.copyWith(isSearchButtonEnabled: query.trim().isNotEmpty);
+    final trimmedQuery = query.trim();
+    _state = state.copyWith(
+      query: trimmedQuery,
+      isSearchButtonEnabled: trimmedQuery.isNotEmpty,
+    );
     notifyListeners();
   }
 
   void onSearchButtonPressed(String query) {
-    log('onSearchButtonPressed $query');
     final trimmedQuery = query.trim();
     if (trimmedQuery.isEmpty) return;
     _state = state.copyWith(
@@ -53,7 +56,6 @@ class NewsSearchController extends ChangeNotifier {
       listState: const NewsListState.init(),
     );
     notifyListeners();
-    log('onSearchButtonPressed $trimmedQuery');
     load();
   }
 

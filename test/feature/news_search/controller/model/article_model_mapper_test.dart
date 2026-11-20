@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:news_shower/domain/model/article_model.dart';
-import 'package:news_shower/feature/news_list/controller/model/article.dart';
-import 'package:news_shower/feature/news_list/controller/model/article_model_mapper.dart';
+import 'package:news_shower/feature/news_search/controller/model/article.dart';
+import 'package:news_shower/feature/news_search/controller/model/article_model_mapper.dart';
 
 void main() {
   group('Maps ArticleModel to Article', () {
