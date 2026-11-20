@@ -50,9 +50,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorArticleUrlInvalid => 'Invalid article URL';
 
   @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get unknownDate => 'Unknown date';
+
+  @override
   String publishedAt(DateTime date) {
     final intl.DateFormat dateDateFormat = intl.DateFormat(
       'MMM d, y HH:mm',
+      localeName,
+    );
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString';
+  }
+
+  @override
+  String publishedAtHeader(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat(
+      'MMM d, y',
       localeName,
     );
     final String dateString = dateDateFormat.format(date);

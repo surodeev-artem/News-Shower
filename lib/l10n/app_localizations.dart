@@ -176,11 +176,35 @@ abstract class AppLocalizations {
   /// **'Invalid article URL'**
   String get errorArticleUrlInvalid;
 
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @unknownDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown date'**
+  String get unknownDate;
+
   /// No description provided for @publishedAt.
   ///
   /// In en, this message translates to:
   /// **'{date}'**
   String publishedAt(DateTime date);
+
+  /// No description provided for @publishedAtHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'{date}'**
+  String publishedAtHeader(DateTime date);
 }
 
 class _AppLocalizationsDelegate

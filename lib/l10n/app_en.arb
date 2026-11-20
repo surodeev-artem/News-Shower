@@ -12,12 +12,25 @@
     "errorUnexpected": "Something went wrong",
     "errorMaximumResultsReached": "Maximum number of search results reached",
     "errorArticleUrlInvalid": "Invalid article URL",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "unknownDate": "Unknown date",
     "publishedAt": "{date}",
     "@publishedAt": {
         "placeholders": {
             "date": {
                 "type": "DateTime",
                 "format": "MMM d, y HH:mm",
+                "isCustomDateFormat": true
+            }
+        }
+    },
+    "publishedAtHeader": "{date}",
+    "@publishedAtHeader": {
+        "placeholders": {
+            "date": {
+                "type": "DateTime",
+                "format": "MMM d, y",
                 "isCustomDateFormat": true
             }
         }

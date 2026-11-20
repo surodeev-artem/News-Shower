@@ -9,6 +9,7 @@ import 'package:news_shower/feature/news_list/controller/model/article_model_map
 import 'package:news_shower/feature/news_list/controller/model/get_news_error_mapper.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_effect.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
+import 'package:news_shower/feature/news_list/controller/model/news_list_item.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_state.dart';
 
 const int _pageSize = 20;
@@ -69,9 +70,11 @@ class NewsListController extends ChangeNotifier {
                   break;
                 }
 
+                final newListItems = groupByDate(newArticles);
                 _state = currentState is NewsListStateData
                     ? currentState.copyWith(
                         articles: newArticles,
+                        items: newListItems,
                         page: currentPage,
                         isLoadingMore: false,
                         loadMoreError: null,
@@ -79,6 +82,7 @@ class NewsListController extends ChangeNotifier {
                       )
                     : NewsListState.data(
                         articles: newArticles,
+                        items: newListItems,
                         page: currentPage,
                         isLoadingMore: false,
                         loadMoreError: null,
@@ -128,6 +132,36 @@ class NewsListController extends ChangeNotifier {
     } catch (e) {
       _effectController.add(const NewsListEffect.articleUrlIsNotValid());
     }
+  }
+
+  List<NewsListItem> groupByDate(List<Article> articles) {
+    final items = <NewsListItem>[];
+    DateTime? currentDay;
+    var isUnknownGroupOpen = false;
+    for (final article in articles) {
+      final publishedAt = article.publishedAt;
+      if (publishedAt == null) {
+        if (!isUnknownGroupOpen) {
+          items.add(const NewsListItem.unknownDate());
+          isUnknownGroupOpen = true;
+          currentDay = null;
+        }
+        items.add(NewsListItem.article(article));
+        continue;
+      }
+      final day = DateTime(
+        publishedAt.year,
+        publishedAt.month,
+        publishedAt.day,
+      );
+      if (isUnknownGroupOpen || day != currentDay) {
+        items.add(NewsListItem.date(day));
+        currentDay = day;
+        isUnknownGroupOpen = false;
+      }
+      items.add(NewsListItem.article(article));
+    }
+    return items;
   }
 
   @override

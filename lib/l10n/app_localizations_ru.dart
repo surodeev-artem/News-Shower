@@ -51,9 +51,29 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorArticleUrlInvalid => 'Некорректный URL статьи';
 
   @override
+  String get today => 'Сегодня';
+
+  @override
+  String get yesterday => 'Вчера';
+
+  @override
+  String get unknownDate => 'Неизвестная дата';
+
+  @override
   String publishedAt(DateTime date) {
     final intl.DateFormat dateDateFormat = intl.DateFormat(
       'dd.MM.yyyy HH:mm',
+      localeName,
+    );
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString';
+  }
+
+  @override
+  String publishedAtHeader(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat(
+      'dd.MM.yyyy',
       localeName,
     );
     final String dateString = dateDateFormat.format(date);

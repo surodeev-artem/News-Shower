@@ -129,14 +129,14 @@ return data(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function()?  loading,TResult Function()?  empty,TResult Function( NewsListError error)?  failure,TResult Function( List<Article> articles,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)?  data,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function()?  loading,TResult Function()?  empty,TResult Function( NewsListError error)?  failure,TResult Function( List<Article> articles,  List<NewsListItem> items,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)?  data,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case NewsListStateInit() when init != null:
 return init();case NewsListStateLoading() when loading != null:
 return loading();case NewsListStateEmpty() when empty != null:
 return empty();case NewsListStateFailure() when failure != null:
 return failure(_that.error);case NewsListStateData() when data != null:
-return data(_that.articles,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);case _:
+return data(_that.articles,_that.items,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);case _:
   return orElse();
 
 }
@@ -154,14 +154,14 @@ return data(_that.articles,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function()  loading,required TResult Function()  empty,required TResult Function( NewsListError error)  failure,required TResult Function( List<Article> articles,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)  data,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function()  loading,required TResult Function()  empty,required TResult Function( NewsListError error)  failure,required TResult Function( List<Article> articles,  List<NewsListItem> items,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)  data,}) {final _that = this;
 switch (_that) {
 case NewsListStateInit():
 return init();case NewsListStateLoading():
 return loading();case NewsListStateEmpty():
 return empty();case NewsListStateFailure():
 return failure(_that.error);case NewsListStateData():
-return data(_that.articles,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);}
+return data(_that.articles,_that.items,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -175,14 +175,14 @@ return data(_that.articles,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function()?  loading,TResult? Function()?  empty,TResult? Function( NewsListError error)?  failure,TResult? Function( List<Article> articles,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)?  data,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function()?  loading,TResult? Function()?  empty,TResult? Function( NewsListError error)?  failure,TResult? Function( List<Article> articles,  List<NewsListItem> items,  int page,  bool isLoadingMore,  bool hasReachedEnd,  NewsListError? loadMoreError)?  data,}) {final _that = this;
 switch (_that) {
 case NewsListStateInit() when init != null:
 return init();case NewsListStateLoading() when loading != null:
 return loading();case NewsListStateEmpty() when empty != null:
 return empty();case NewsListStateFailure() when failure != null:
 return failure(_that.error);case NewsListStateData() when data != null:
-return data(_that.articles,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);case _:
+return data(_that.articles,_that.items,_that.page,_that.isLoadingMore,_that.hasReachedEnd,_that.loadMoreError);case _:
   return null;
 
 }
@@ -367,7 +367,7 @@ $NewsListErrorCopyWith<$Res> get error {
 
 
 class NewsListStateData implements NewsListState {
-  const NewsListStateData({required  List<Article> articles, this.page = 1, this.isLoadingMore = false, this.hasReachedEnd = false, this.loadMoreError}): _articles = articles;
+  const NewsListStateData({required  List<Article> articles, required  List<NewsListItem> items, this.page = 1, this.isLoadingMore = false, this.hasReachedEnd = false, this.loadMoreError}): _articles = articles,_items = items;
   
 
  final  List<Article> _articles;
@@ -375,6 +375,13 @@ class NewsListStateData implements NewsListState {
   if (_articles is EqualUnmodifiableListView) return _articles;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_articles);
+}
+
+ final  List<NewsListItem> _items;
+ List<NewsListItem> get items {
+  if (_items is EqualUnmodifiableListView) return _items;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_items);
 }
 
 @JsonKey() final  int page;
@@ -392,18 +399,18 @@ $NewsListStateDataCopyWith<NewsListStateData> get copyWith => _$NewsListStateDat
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsListStateData&&const DeepCollectionEquality().equals(other.articles, _articles)&&(identical(other.page, page) || other.page == page)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore)&&(identical(other.hasReachedEnd, hasReachedEnd) || other.hasReachedEnd == hasReachedEnd)&&(identical(other.loadMoreError, loadMoreError) || other.loadMoreError == loadMoreError));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsListStateData&&const DeepCollectionEquality().equals(other.articles, _articles)&&const DeepCollectionEquality().equals(other.items, _items)&&(identical(other.page, page) || other.page == page)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore)&&(identical(other.hasReachedEnd, hasReachedEnd) || other.hasReachedEnd == hasReachedEnd)&&(identical(other.loadMoreError, loadMoreError) || other.loadMoreError == loadMoreError));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_articles),page,isLoadingMore,hasReachedEnd,loadMoreError);
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_articles),const DeepCollectionEquality().hash(_items),page,isLoadingMore,hasReachedEnd,loadMoreError);
 }
 
 @override
 String toString() {
-    return 'NewsListState.data(articles: $articles, page: $page, isLoadingMore: $isLoadingMore, hasReachedEnd: $hasReachedEnd, loadMoreError: $loadMoreError)';
+    return 'NewsListState.data(articles: $articles, items: $items, page: $page, isLoadingMore: $isLoadingMore, hasReachedEnd: $hasReachedEnd, loadMoreError: $loadMoreError)';
 }
 
 
@@ -414,7 +421,7 @@ abstract mixin class $NewsListStateDataCopyWith<$Res> implements $NewsListStateC
   factory $NewsListStateDataCopyWith(NewsListStateData value, $Res Function(NewsListStateData) _then) = _$NewsListStateDataCopyWithImpl;
 @useResult
 $Res call({
- List<Article> articles, int page, bool isLoadingMore, bool hasReachedEnd, NewsListError? loadMoreError
+ List<Article> articles, List<NewsListItem> items, int page, bool isLoadingMore, bool hasReachedEnd, NewsListError? loadMoreError
 });
 
 
@@ -431,10 +438,11 @@ class _$NewsListStateDataCopyWithImpl<$Res>
 
 /// Create a copy of NewsListState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? articles = null,Object? page = null,Object? isLoadingMore = null,Object? hasReachedEnd = null,Object? loadMoreError = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? articles = null,Object? items = null,Object? page = null,Object? isLoadingMore = null,Object? hasReachedEnd = null,Object? loadMoreError = freezed,}) {
   return _then(NewsListStateData(
 articles: null == articles ? _self._articles : articles // ignore: cast_nullable_to_non_nullable
-as List<Article>,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as List<Article>,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as List<NewsListItem>,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,isLoadingMore: null == isLoadingMore ? _self.isLoadingMore : isLoadingMore // ignore: cast_nullable_to_non_nullable
 as bool,hasReachedEnd: null == hasReachedEnd ? _self.hasReachedEnd : hasReachedEnd // ignore: cast_nullable_to_non_nullable
 as bool,loadMoreError: freezed == loadMoreError ? _self.loadMoreError : loadMoreError // ignore: cast_nullable_to_non_nullable

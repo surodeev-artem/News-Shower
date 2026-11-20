@@ -7,6 +7,7 @@ import 'package:news_shower/common/ui/app_localizations_ext.dart';
 import 'package:news_shower/common/ui/shimmer_box.dart';
 import 'package:news_shower/feature/news_list/controller/model/article.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_effect.dart';
+import 'package:news_shower/feature/news_list/controller/model/news_list_item.dart';
 import 'package:news_shower/feature/news_list/controller/news_list_controller.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_error.dart';
 import 'package:news_shower/feature/news_list/controller/model/news_list_state.dart';
@@ -159,7 +160,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
 
     return SizedBox.expand(
       child: ListView.builder(
-        itemCount: state.articles.length + (hasFooter ? 1 : 0),
+        itemCount: state.items.length + (hasFooter ? 1 : 0),
         padding: EdgeInsets.only(
           left: padding,
           top: padding,
@@ -167,7 +168,7 @@ final class _NewsListScreenState extends State<NewsListScreen>
           bottom: hasFooter ? 0 : padding + bottomInset,
         ),
         itemBuilder: (_, index) {
-          if (index == state.articles.length) {
+          if (index == state.items.length) {
             final shouldLoad =
                 !state.hasReachedEnd &&
                 !state.isLoadingMore &&
@@ -180,18 +181,29 @@ final class _NewsListScreenState extends State<NewsListScreen>
             return _footer(state);
           }
 
-          return _article(
-            key: ValueKey(
-              state.articles[index].url?.isNotEmpty == true
-                  ? state.articles[index].url
-                  : Object.hash(
-                      state.articles[index].title,
-                      state.articles[index].publishedAt,
-                      index,
-                    ),
+          final item = state.items[index];
+
+          return switch (item) {
+            NewsListItemDate() => _dateHeader(
+              key: ValueKey(item.date),
+              date: item.date,
             ),
-            article: state.articles[index],
-          );
+            NewsListItemUnknownDate() => _unknownDateHeader(
+              key: const ValueKey('unknown_date'),
+            ),
+            NewsListItemArticle() => _article(
+              key: ValueKey(
+                item.article.url?.isNotEmpty == true
+                    ? item.article.url
+                    : Object.hash(
+                        item.article.title,
+                        item.article.publishedAt,
+                        index,
+                      ),
+              ),
+              article: item.article,
+            ),
+          };
         },
       ),
     );
@@ -201,6 +213,38 @@ final class _NewsListScreenState extends State<NewsListScreen>
     return FilledButton(
       onPressed: onPressed,
       child: Text(context.l10n.errorButton),
+    );
+  }
+
+  Widget _dateHeader({Key? key, required DateTime date}) {
+    return Padding(
+      key: key,
+      padding: const EdgeInsetsGeometry.only(
+        left: 16,
+        right: 16,
+        top: 16,
+        bottom: 8,
+      ),
+      child: Text(
+        _dateTitle(date),
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
+    );
+  }
+
+  Widget _unknownDateHeader({Key? key}) {
+    return Padding(
+      key: key,
+      padding: const EdgeInsetsGeometry.only(
+        left: 16,
+        right: 16,
+        top: 16,
+        bottom: 8,
+      ),
+      child: Text(
+        context.l10n.unknownDate,
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
     );
   }
 
@@ -350,6 +394,15 @@ final class _NewsListScreenState extends State<NewsListScreen>
             SnackBar(content: Text(context.l10n.errorArticleUrlInvalid)),
           );
     }
+  }
+
+  String _dateTitle(DateTime date) {
+    final today = DateUtils.dateOnly(DateTime.now());
+    if (date == today) return context.l10n.today;
+    if (date == today.subtract(const Duration(days: 1))) {
+      return context.l10n.yesterday;
+    }
+    return context.l10n.publishedAtHeader(date); // dd.MM.yyyy
   }
 
   @override
