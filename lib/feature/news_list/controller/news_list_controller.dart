@@ -137,6 +137,7 @@ class NewsListController extends ChangeNotifier {
           break;
         }
     }
+    notifyListeners();
   }
 
   List<NewsListItem> _groupByDate(List<Article> articles) {
