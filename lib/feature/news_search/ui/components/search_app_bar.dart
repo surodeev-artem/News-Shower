@@ -25,39 +25,46 @@ class SearchAppBar extends StatefulWidget {
 }
 
 class _SearchAppBarState extends State<SearchAppBar>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final TextEditingController _textEditingController;
-  late final AnimationController _move;
+  late final AnimationController _appBarMove;
+  late final AnimationController _hintShowing;
 
   @override
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
-    _move = AnimationController(
+    _appBarMove = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 350),
+      duration: const Duration(milliseconds: 200),
+    );
+    _hintShowing = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _move,
+      animation: Listenable.merge([_appBarMove, _hintShowing]),
       builder: (_, _) {
         const controlsHeight = 72.0;
         final expandedExtent = max(widget._viewportHeight, controlsHeight);
+        final hintVisibility =
+            (1 - _appBarMove.value) * (1 - _hintShowing.value);
         final maxExtent = lerpDouble(
           expandedExtent,
           controlsHeight,
-          _move.value,
+          _appBarMove.value,
         )!;
-
         return SliverPersistentHeader(
           pinned: false,
           floating: true,
           delegate: _SearchAppBarDelegate(
             minExtent: controlsHeight,
             maxExtent: maxExtent,
+            hintVisibility: hintVisibility,
             textController: _textEditingController,
             isSearchButtonEnabled: widget._isSearchButtonEnabled,
             onSearchQueryChanged: widget._onSearchQueryChanged,
@@ -70,7 +77,8 @@ class _SearchAppBarState extends State<SearchAppBar>
 
   @override
   void dispose() {
-    _move.dispose();
+    _appBarMove.dispose();
+    _hintShowing.dispose();
     _textEditingController.dispose();
     super.dispose();
   }
@@ -78,11 +86,22 @@ class _SearchAppBarState extends State<SearchAppBar>
   @override
   void didUpdateWidget(SearchAppBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget._isInitial == oldWidget._isInitial) return;
-    if (widget._isInitial) {
-      _move.reverse();
-    } else {
-      _move.forward();
+
+    if (widget._isInitial != oldWidget._isInitial) {
+      if (widget._isInitial) {
+        _appBarMove.reverse();
+      } else {
+        _appBarMove.forward();
+      }
+    }
+
+    if (widget._isInitial != oldWidget._isInitial ||
+        widget._isSearchButtonEnabled != oldWidget._isSearchButtonEnabled) {
+      if (widget._isInitial && !widget._isSearchButtonEnabled) {
+        _hintShowing.reverse();
+      } else {
+        _hintShowing.forward();
+      }
     }
   }
 }
@@ -93,6 +112,7 @@ class _SearchAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   final double maxExtent;
 
+  final double hintVisibility;
   final TextEditingController textController;
   final bool isSearchButtonEnabled;
   final void Function(String query) onSearchQueryChanged;
@@ -101,6 +121,7 @@ class _SearchAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SearchAppBarDelegate({
     required this.minExtent,
     required this.maxExtent,
+    required this.hintVisibility,
     required this.textController,
     required this.isSearchButtonEnabled,
     required this.onSearchQueryChanged,
@@ -113,13 +134,13 @@ class _SearchAppBarDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    final controlsHeight = 48.0;
+    const controlsHeight = 48.0;
     return SizedBox.expand(
       child: Material(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
+            alignment: AlignmentDirectional.centerStart,
             children: [
               Row(
                 mainAxisSize: MainAxisSize.max,
@@ -157,11 +178,24 @@ class _SearchAppBarDelegate extends SliverPersistentHeaderDelegate {
                         : null,
                     icon: const Icon(Icons.search),
                     style: IconButton.styleFrom(
-                      fixedSize: Size.square(controlsHeight),
+                      fixedSize: const Size.square(controlsHeight),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
                 ],
+              ),
+              Transform.translate(
+                offset: const Offset(0, controlsHeight / 2),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 16),
+                  child: Opacity(
+                    opacity: hintVisibility,
+                    child: Text(
+                      context.l10n.searchHint,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -175,6 +209,7 @@ class _SearchAppBarDelegate extends SliverPersistentHeaderDelegate {
     return isSearchButtonEnabled != oldDelegate.isSearchButtonEnabled ||
         textController != oldDelegate.textController ||
         minExtent != oldDelegate.minExtent ||
-        maxExtent != oldDelegate.maxExtent;
+        maxExtent != oldDelegate.maxExtent ||
+        hintVisibility != oldDelegate.hintVisibility;
   }
 }

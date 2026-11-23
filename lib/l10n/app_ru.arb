@@ -13,6 +13,7 @@
     "today": "Сегодня",
     "yesterday": "Вчера",
     "unknownDate": "Неизвестная дата",
+    "searchHint": "Для поиска новостей воспользуйтесь поиском",
     "publishedAt": "{date}",
     "@publishedAt": {
         "placeholders": {

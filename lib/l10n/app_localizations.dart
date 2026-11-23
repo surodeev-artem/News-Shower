@@ -182,6 +182,12 @@ abstract class AppLocalizations {
   /// **'Unknown date'**
   String get unknownDate;
 
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the search for find news'**
+  String get searchHint;
+
   /// No description provided for @publishedAt.
   ///
   /// In en, this message translates to:

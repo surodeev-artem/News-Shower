@@ -53,6 +53,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknownDate => 'Unknown date';
 
   @override
+  String get searchHint => 'Use the search for find news';
+
+  @override
   String publishedAt(DateTime date) {
     final intl.DateFormat dateDateFormat = intl.DateFormat(
       'MMM d, y HH:mm',

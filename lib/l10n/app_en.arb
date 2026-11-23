@@ -13,6 +13,7 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "unknownDate": "Unknown date",
+    "searchHint": "Use the search for find news",
     "publishedAt": "{date}",
     "@publishedAt": {
         "placeholders": {

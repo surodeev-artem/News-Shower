@@ -54,6 +54,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get unknownDate => 'Неизвестная дата';
 
   @override
+  String get searchHint => 'Для поиска новостей воспользуйтесь поиском';
+
+  @override
   String publishedAt(DateTime date) {
     final intl.DateFormat dateDateFormat = intl.DateFormat(
       'dd.MM.yyyy HH:mm',
