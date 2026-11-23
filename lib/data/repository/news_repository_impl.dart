@@ -20,7 +20,10 @@ class NewsRepositoryImpl implements NewsRepository {
   }) {
     return _newsApi
         .getNewsByQuery(query.trim(), page, pageSize)
-        .map((response) => NewsResponseDtoMapper.map(response))
+        .map((response) {
+          final dto = NewsResponseDto.fromJson(response);
+          return NewsResponseDtoMapper.map(dto);
+        })
         .onErrorResume((e, _) {
           if (e is DioException && CancelToken.isCancel(e)) {
             return const Stream.empty();

@@ -1,8 +1,7 @@
-import 'package:news_shower/data/source/remote/dto/news_response_dto.dart';
 import 'package:news_shower/data/source/remote/news_api.dart';
 
 final class NewsApiFake extends NewsApi {
-  final Stream<NewsResponseDto> Function() _result;
+  final Stream<Map<String, dynamic>> Function() _result;
 
   String? query;
   int? pageIndex;
@@ -11,7 +10,7 @@ final class NewsApiFake extends NewsApi {
   NewsApiFake(this._result);
 
   @override
-  Stream<NewsResponseDto> getNewsByQuery(
+  Stream<Map<String, dynamic>> getNewsByQuery(
     String query,
     int pageIndex,
     int pageSize,

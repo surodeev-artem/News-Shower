@@ -1,7 +1,5 @@
-import 'package:news_shower/data/source/remote/dto/news_response_dto.dart';
-
 abstract class NewsApi {
-  Stream<NewsResponseDto> getNewsByQuery(
+  Stream<Map<String, dynamic>> getNewsByQuery(
     String query,
     int pageIndex,
     int pageSize,

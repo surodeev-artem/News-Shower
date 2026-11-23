@@ -14,9 +14,7 @@ void main() {
   test(
     'Query was trimmed for the NewsApi and other arguments was not changed',
     () async {
-      final api = NewsApiFake(
-        () => Stream.value(const NewsResponseDto(status: 'ok')),
-      );
+      final api = NewsApiFake(() => Stream.value(const {'status': 'ok'}));
 
       final repository = NewsRepositoryImpl(api);
 
@@ -37,12 +35,12 @@ void main() {
   test('NewsApi returns OK status and one article and NewsResponseDto was mapped to GetNewsResultSuccess', () async {
     const articleTitle = 'Title';
     final api = NewsApiFake(
-      () => Stream.value(
-        const NewsResponseDto(
-          status: 'ok',
-          articles: [ArticleDto(title: articleTitle)],
-        ),
-      ),
+      () => Stream.value(const {
+        'status': 'ok',
+        'articles': [
+          {'title': articleTitle},
+        ],
+      }),
     );
 
     final repository = NewsRepositoryImpl(api);
@@ -87,9 +85,7 @@ void main() {
 
   test('NewsApi returns error status as 200 response and code was mapped to GetNewsError', () async {
     final api = NewsApiFake(
-      () => Stream.value(
-        const NewsResponseDto(status: 'error', code: 'apiKeyDisabled'),
-      ),
+      () => Stream.value(const {'status': 'error', 'code': 'apiKeyDisabled'}),
     );
 
     final repository = NewsRepositoryImpl(api);
@@ -174,7 +170,7 @@ void main() {
     'Someone cancels the subscription and repository emits nothing',
     () async {
       final api = NewsApiFake(
-        () => Stream.fromFuture(Completer<NewsResponseDto>().future),
+        () => Stream.fromFuture(Completer<Map<String, dynamic>>().future),
       );
 
       final repository = NewsRepositoryImpl(api);
