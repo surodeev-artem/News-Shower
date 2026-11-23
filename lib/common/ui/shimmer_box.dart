@@ -30,7 +30,10 @@ class _ShimmerBoxState extends State<ShimmerBox> {
   @override
   Widget build(BuildContext context) {
     final base = Theme.of(context).colorScheme.surfaceContainerHighest;
-    final highlight = Theme.of(context).colorScheme.surfaceContainerLow;
+    final highlight = Color.alphaBlend(
+      Colors.white.withValues(alpha: 0.5),
+      base,
+    );
 
     return AnimatedBuilder(
       animation: widget.animation,
@@ -41,9 +44,9 @@ class _ShimmerBoxState extends State<ShimmerBox> {
             final slide = -2.2 + widget.animation.value * 4.4;
             return LinearGradient(
               begin: Alignment(slide, -0.2),
-              end: Alignment(slide + 1, 0.2),
+              end: Alignment(slide + 1.5, 0.2),
               colors: [base, base, highlight, base, base],
-              stops: const [0.0, 0.4, 0.5, 0.6, 1.0],
+              stops: const [0.0, 0.1, 0.5, 0.9, 1.0],
               tileMode: TileMode.clamp,
             ).createShader(bounds);
           },

@@ -7,6 +7,7 @@ class NewsShowerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final seedColor = Colors.deepPurple;
     return MaterialApp.router(
       title: 'News Shower',
       localizationsDelegates: [
@@ -14,7 +15,13 @@ class NewsShowerApp extends StatelessWidget {
         ...GlobalMaterialLocalizations.delegates,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(colorScheme: .fromSeed(seedColor: seedColor)),
+      darkTheme: ThemeData(
+        colorScheme: .fromSeed(
+          seedColor: seedColor,
+          brightness: Brightness.dark,
+        ),
+      ),
       routerConfig: router,
     );
   }
