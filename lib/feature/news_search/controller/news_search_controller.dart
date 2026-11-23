@@ -131,7 +131,6 @@ class NewsSearchController extends ChangeNotifier {
       case GetNewsResultSuccess():
         {
           final currentArticles = result.articles.map(ArticleModelMapper.map);
-
           final newArticles = [...previousArticles, ...currentArticles];
 
           if (newArticles.isEmpty) {
@@ -148,7 +147,7 @@ class NewsSearchController extends ChangeNotifier {
                     page: currentPage,
                     isLoadingMore: false,
                     loadMoreError: null,
-                    hasReachedEnd: currentArticles.length < _pageSize,
+                    hasReachedEnd: currentArticles.isEmpty,
                   )
                 : NewsListState.data(
                     articles: newArticles,
@@ -156,7 +155,7 @@ class NewsSearchController extends ChangeNotifier {
                     page: currentPage,
                     isLoadingMore: false,
                     loadMoreError: null,
-                    hasReachedEnd: currentArticles.length < _pageSize,
+                    hasReachedEnd: currentArticles.isEmpty,
                   ),
           );
           break;
