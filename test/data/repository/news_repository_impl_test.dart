@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:news_shower/common/data/empty_response_exception.dart';
 import 'package:news_shower/data/repository/news_repository_impl.dart';
-import 'package:news_shower/data/source/remote/dto/news_response_dto.dart';
 import 'package:news_shower/domain/model/article_model.dart';
 import 'package:news_shower/domain/model/get_news_error.dart';
 import 'package:news_shower/domain/model/get_news_result.dart';
@@ -60,15 +59,10 @@ void main() {
     'NewsApi returns error status and code was mapped to GetNewsError',
     () async {
       final api = NewsApiFake(() {
-        final requestOptions = RequestOptions(path: '/everything');
-        final exception = DioException(
-          requestOptions: requestOptions,
-          response: Response(
-            requestOptions: requestOptions,
-            data: {'status': 'error', 'code': 'apiKeyDisabled'},
-          ),
-        );
-        return Stream.error(exception);
+        return Stream.value(const {
+          'status': 'error',
+          'code': 'apiKeyDisabled',
+        });
       });
 
       final repository = NewsRepositoryImpl(api);
@@ -102,14 +96,9 @@ void main() {
   test(
     'NewsApi returns nothing and code was mapped to GetNewsErrorUnexpected',
     () async {
-      final api = NewsApiFake(() {
-        final requestOptions = RequestOptions(path: '/everything');
-        final exception = DioException(
-          requestOptions: requestOptions,
-          response: Response(requestOptions: requestOptions),
-        );
-        return Stream.error(exception);
-      });
+      final api = NewsApiFake(
+        () => Stream.error(const EmptyResponseException()),
+      );
 
       final repository = NewsRepositoryImpl(api);
       final response = await repository
@@ -126,17 +115,7 @@ void main() {
   test(
     'NewsApi returns wrong JSON and code was mapped to GetNewsErrorUnexpected',
     () async {
-      final api = NewsApiFake(() {
-        final requestOptions = RequestOptions(path: '/everything');
-        final exception = DioException(
-          requestOptions: requestOptions,
-          response: Response(
-            requestOptions: requestOptions,
-            data: {'wrong_body': 'error'},
-          ),
-        );
-        return Stream.error(exception);
-      });
+      final api = NewsApiFake(() => Stream.value({'wrong_body': 'error'}));
 
       final repository = NewsRepositoryImpl(api);
       final response = await repository

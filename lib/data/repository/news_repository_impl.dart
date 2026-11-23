@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:news_shower/data/source/remote/dto/news_response_dto.dart';
 import 'package:news_shower/data/source/remote/dto/news_response_dto_mapper.dart';
 import 'package:news_shower/data/source/remote/news_api.dart';
@@ -24,28 +23,10 @@ class NewsRepositoryImpl implements NewsRepository {
           final dto = NewsResponseDto.fromJson(response);
           return NewsResponseDtoMapper.map(dto);
         })
-        .onErrorResume((e, _) {
-          if (e is DioException && CancelToken.isCancel(e)) {
-            return const Stream.empty();
-          }
-
-          final data = e is DioException ? e.response?.data : null;
-          if (data is Map) {
-            try {
-              final response = NewsResponseDto.fromJson(
-                Map<String, dynamic>.from(data),
-              );
-              return Stream.value(NewsResponseDtoMapper.map(response));
-            } catch (e) {
-              return Stream.value(
-                const GetNewsResult.failure(error: GetNewsError.unexpected()),
-              );
-            }
-          }
-
-          return Stream.value(
+        .onErrorResume(
+          (_, _) => Stream.value(
             const GetNewsResult.failure(error: GetNewsError.unexpected()),
-          );
-        });
+          ),
+        );
   }
 }

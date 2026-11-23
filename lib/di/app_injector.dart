@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:news_shower/common/data/http_client.dart';
 import 'package:news_shower/common/domain/external_browser_link_launcher.dart';
 import 'package:news_shower/common/domain/link_launcher.dart';
 import 'package:news_shower/data/repository/news_repository_impl.dart';
@@ -25,6 +26,7 @@ abstract final class AppInjector {
   static void _registerData() {
     _getIt.registerLazySingleton<ApiKeyInterceptor>(() => ApiKeyInterceptor());
     _getIt.registerLazySingleton<Dio>(() => DioFactory(_getIt()).create());
+    _getIt.registerLazySingleton<HttpClient>(() => HttpClient(_getIt()));
     _getIt.registerLazySingleton<NewsApi>(() => NewsApiImpl(_getIt()));
   }
 
