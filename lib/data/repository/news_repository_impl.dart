@@ -5,6 +5,7 @@ import 'package:news_shower/data/source/remote/news_api.dart';
 import 'package:news_shower/domain/model/get_news_error.dart';
 import 'package:news_shower/domain/model/get_news_result.dart';
 import 'package:news_shower/domain/repository/news_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
 class NewsRepositoryImpl implements NewsRepository {
   final NewsApi _newsApi;
@@ -17,54 +18,31 @@ class NewsRepositoryImpl implements NewsRepository {
     required int page,
     required int pageSize,
   }) {
-    return Stream<GetNewsResult>.multi((listener) {
-      final cancelToken = CancelToken();
-      bool cancelled = false;
-      listener.onCancel = () {
-        cancelled = true;
-        if (!cancelToken.isCancelled) cancelToken.cancel();
-      };
-      _load(query, page, pageSize, cancelToken).then((result) {
-        if (cancelled || !listener.hasListener) return;
-        listener.add(result);
-        listener.close();
-      });
-    });
-  }
+    return _newsApi
+        .getNewsByQuery(query.trim(), page, pageSize)
+        .map((response) => NewsResponseDtoMapper.map(response))
+        .onErrorResume((e, _) {
+          if (e is DioException && CancelToken.isCancel(e)) {
+            return const Stream.empty();
+          }
 
-  Future<GetNewsResult> _load(
-    String query,
-    int page,
-    int pageSize,
-    CancelToken cancelToken,
-  ) async {
-    try {
-      final response = await _newsApi.getNewsByQuery(
-        query.trim(),
-        page,
-        pageSize,
-        cancelToken,
-      );
+          final data = e is DioException ? e.response?.data : null;
+          if (data is Map) {
+            try {
+              final response = NewsResponseDto.fromJson(
+                Map<String, dynamic>.from(data),
+              );
+              return Stream.value(NewsResponseDtoMapper.map(response));
+            } catch (e) {
+              return Stream.value(
+                const GetNewsResult.failure(error: GetNewsError.unexpected()),
+              );
+            }
+          }
 
-      return NewsResponseDtoMapper.map(response);
-    } on DioException catch (e) {
-      if (CancelToken.isCancel(e)) {
-        return const GetNewsResult.failure(error: GetNewsError.unexpected());
-      }
-      if (e.response?.data is Map) {
-        try {
-          final response = NewsResponseDto.fromJson(
-            Map<String, dynamic>.from(e.response?.data),
+          return Stream.value(
+            const GetNewsResult.failure(error: GetNewsError.unexpected()),
           );
-          return NewsResponseDtoMapper.map(response);
-        } catch (e) {
-          return const GetNewsResult.failure(error: GetNewsError.unexpected());
-        }
-      } else {
-        return const GetNewsResult.failure(error: GetNewsError.unexpected());
-      }
-    } catch (e) {
-      return const GetNewsResult.failure(error: GetNewsError.unexpected());
-    }
+        });
   }
 }

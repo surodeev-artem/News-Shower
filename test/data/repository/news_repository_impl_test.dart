@@ -14,7 +14,9 @@ void main() {
   test(
     'Query was trimmed for the NewsApi and other arguments was not changed',
     () async {
-      final api = NewsApiFake(() async => const NewsResponseDto(status: 'ok'));
+      final api = NewsApiFake(
+        () => Stream.value(const NewsResponseDto(status: 'ok')),
+      );
 
       final repository = NewsRepositoryImpl(api);
 
@@ -35,9 +37,11 @@ void main() {
   test('NewsApi returns OK status and one article and NewsResponseDto was mapped to GetNewsResultSuccess', () async {
     const articleTitle = 'Title';
     final api = NewsApiFake(
-      () async => const NewsResponseDto(
-        status: 'ok',
-        articles: [ArticleDto(title: articleTitle)],
+      () => Stream.value(
+        const NewsResponseDto(
+          status: 'ok',
+          articles: [ArticleDto(title: articleTitle)],
+        ),
       ),
     );
 
@@ -57,15 +61,16 @@ void main() {
   test(
     'NewsApi returns error status and code was mapped to GetNewsError',
     () async {
-      final api = NewsApiFake(() async {
+      final api = NewsApiFake(() {
         final requestOptions = RequestOptions(path: '/everything');
-        throw DioException(
+        final exception = DioException(
           requestOptions: requestOptions,
           response: Response(
             requestOptions: requestOptions,
             data: {'status': 'error', 'code': 'apiKeyDisabled'},
           ),
         );
+        return Stream.error(exception);
       });
 
       final repository = NewsRepositoryImpl(api);
@@ -82,8 +87,9 @@ void main() {
 
   test('NewsApi returns error status as 200 response and code was mapped to GetNewsError', () async {
     final api = NewsApiFake(
-      () async =>
-          const NewsResponseDto(status: 'error', code: 'apiKeyDisabled'),
+      () => Stream.value(
+        const NewsResponseDto(status: 'error', code: 'apiKeyDisabled'),
+      ),
     );
 
     final repository = NewsRepositoryImpl(api);
@@ -100,12 +106,13 @@ void main() {
   test(
     'NewsApi returns nothing and code was mapped to GetNewsErrorUnexpected',
     () async {
-      final api = NewsApiFake(() async {
+      final api = NewsApiFake(() {
         final requestOptions = RequestOptions(path: '/everything');
-        throw DioException(
+        final exception = DioException(
           requestOptions: requestOptions,
           response: Response(requestOptions: requestOptions),
         );
+        return Stream.error(exception);
       });
 
       final repository = NewsRepositoryImpl(api);
@@ -123,15 +130,16 @@ void main() {
   test(
     'NewsApi returns wrong JSON and code was mapped to GetNewsErrorUnexpected',
     () async {
-      final api = NewsApiFake(() async {
+      final api = NewsApiFake(() {
         final requestOptions = RequestOptions(path: '/everything');
-        throw DioException(
+        final exception = DioException(
           requestOptions: requestOptions,
           response: Response(
             requestOptions: requestOptions,
             data: {'wrong_body': 'error'},
           ),
         );
+        return Stream.error(exception);
       });
 
       final repository = NewsRepositoryImpl(api);
@@ -147,8 +155,8 @@ void main() {
   );
 
   test('Dio returns non DioException and code was mapped to GetNewsErrorUnexpected', () async {
-    final api = NewsApiFake(() async {
-      throw Exception('Not DioException');
+    final api = NewsApiFake(() {
+      return Stream.error(Exception('Not DioException'));
     });
 
     final repository = NewsRepositoryImpl(api);
@@ -165,7 +173,9 @@ void main() {
   test(
     'Someone cancels the subscription and repository emits nothing',
     () async {
-      final api = NewsApiFake(() => Completer<NewsResponseDto>().future);
+      final api = NewsApiFake(
+        () => Stream.fromFuture(Completer<NewsResponseDto>().future),
+      );
 
       final repository = NewsRepositoryImpl(api);
       final events = <GetNewsResult>[];
@@ -176,7 +186,6 @@ void main() {
       await pumpEventQueue();
       await subscription.cancel();
 
-      expect(api.cancelToken?.isCancelled, isTrue);
       expect(events, isEmpty);
     },
   );
