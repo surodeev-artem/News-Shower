@@ -1,30 +1,27 @@
 import 'package:material_ui/material_ui.dart';
 
 class ShimmerBox extends StatefulWidget {
-  final Animation<double> animation;
   final double width;
   final double height;
-  final VoidCallback? onShown;
-  final VoidCallback? onHidden;
 
-  const ShimmerBox({
-    super.key,
-    this.onShown,
-    this.onHidden,
-    required this.width,
-    required this.height,
-    required this.animation,
-  });
+  const ShimmerBox({super.key, required this.width, required this.height});
 
   @override
   State<ShimmerBox> createState() => _ShimmerBoxState();
 }
 
-class _ShimmerBoxState extends State<ShimmerBox> {
+class _ShimmerBoxState extends State<ShimmerBox>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _shimmer;
+
   @override
   void initState() {
     super.initState();
-    widget.onShown?.call();
+
+    _shimmer = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
   }
 
   @override
@@ -36,12 +33,12 @@ class _ShimmerBoxState extends State<ShimmerBox> {
     );
 
     return AnimatedBuilder(
-      animation: widget.animation,
+      animation: _shimmer,
       builder: (_, child) {
         return ShaderMask(
           blendMode: BlendMode.srcATop,
           shaderCallback: (bounds) {
-            final slide = -2.2 + widget.animation.value * 4.4;
+            final slide = -2.2 + _shimmer.value * 4.4;
             return LinearGradient(
               begin: Alignment(slide, -0.2),
               end: Alignment(slide + 1.5, 0.2),
@@ -62,7 +59,7 @@ class _ShimmerBoxState extends State<ShimmerBox> {
 
   @override
   void dispose() {
-    widget.onHidden?.call();
+    _shimmer.dispose();
     super.dispose();
   }
 }

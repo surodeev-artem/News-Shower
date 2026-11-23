@@ -5,8 +5,8 @@ import 'package:news_shower/common/ui/app_localizations_ext.dart';
 import 'package:news_shower/feature/news_search/controller/model/news_list_state.dart';
 import 'package:news_shower/feature/news_search/controller/model/news_search_effect.dart';
 import 'package:news_shower/feature/news_search/controller/news_search_controller.dart';
-import 'package:news_shower/feature/news_search/ui/components/search_app_bar.dart';
-import 'package:news_shower/feature/news_search/ui/components/search_list.dart';
+import 'package:news_shower/feature/news_search/ui/search_bar/search_app_bar.dart';
+import 'package:news_shower/feature/news_search/ui/search_list/search_list.dart';
 
 class NewsSearchScreen extends StatefulWidget {
   final NewsSearchController _controller;

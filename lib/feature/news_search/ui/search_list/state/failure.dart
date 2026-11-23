@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:news_shower/feature/news_search/controller/model/news_list_error.dart';
-import 'package:news_shower/feature/news_search/ui/components/search_list_failure_item.dart';
+import 'package:news_shower/feature/news_search/ui/search_list/item/failure_item.dart';
 
 class SearchListFailureState extends StatelessWidget {
   final NewsListError _error;

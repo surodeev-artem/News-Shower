@@ -15,26 +15,26 @@ class SearchListFailureItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (_error) {
-      NewsListErrorApiKeyDisabled() => _NotRetryableErrorItem(
+      NewsListErrorApiKeyDisabled() => _SearchListNotRetryableErrorItem(
         title: context.l10n.errorApiKeyDisabled,
       ),
-      NewsListErrorApiKeyExhausted() => _NotRetryableErrorItem(
+      NewsListErrorApiKeyExhausted() => _SearchListNotRetryableErrorItem(
         title: context.l10n.errorApiKeyExhausted,
       ),
-      NewsListErrorApiKeyInvalid() => _NotRetryableErrorItem(
+      NewsListErrorApiKeyInvalid() => _SearchListNotRetryableErrorItem(
         title: context.l10n.errorApiKeyInvalid,
       ),
-      NewsListErrorApiKeyMissing() => _NotRetryableErrorItem(
+      NewsListErrorApiKeyMissing() => _SearchListNotRetryableErrorItem(
         title: context.l10n.errorApiKeyMissing,
       ),
-      NewsListErrorMaximumResultsReached() => _NotRetryableErrorItem(
+      NewsListErrorMaximumResultsReached() => _SearchListNotRetryableErrorItem(
         title: context.l10n.errorMaximumResultsReached,
       ),
-      NewsListErrorRateLimited() => _RetryableErrorItem(
+      NewsListErrorRateLimited() => _SearchListRetryableErrorItem(
         title: context.l10n.errorTooManyRequest,
         onRetryPressed: _onRetryPressed,
       ),
-      NewsListErrorUnexpected() => _RetryableErrorItem(
+      NewsListErrorUnexpected() => _SearchListRetryableErrorItem(
         title: context.l10n.errorUnexpected,
         onRetryPressed: _onRetryPressed,
       ),
@@ -42,11 +42,11 @@ class SearchListFailureItem extends StatelessWidget {
   }
 }
 
-class _RetryableErrorItem extends StatelessWidget {
+class _SearchListRetryableErrorItem extends StatelessWidget {
   final String title;
   final VoidCallback onRetryPressed;
 
-  const _RetryableErrorItem({
+  const _SearchListRetryableErrorItem({
     super.key,
     required this.title,
     required this.onRetryPressed,
@@ -57,30 +57,30 @@ class _RetryableErrorItem extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _ErrorTitle(title: title),
+        _SearchListErrorTitle(title: title),
 
         const SizedBox(height: 8),
-        _ErrorRetryButton(onPressed: onRetryPressed),
+        _SearchListErrorRetryButton(onPressed: onRetryPressed),
       ],
     );
   }
 }
 
-class _NotRetryableErrorItem extends StatelessWidget {
+class _SearchListNotRetryableErrorItem extends StatelessWidget {
   final String title;
 
-  const _NotRetryableErrorItem({super.key, required this.title});
+  const _SearchListNotRetryableErrorItem({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
-    return _ErrorTitle(title: title);
+    return _SearchListErrorTitle(title: title);
   }
 }
 
-class _ErrorTitle extends StatelessWidget {
+class _SearchListErrorTitle extends StatelessWidget {
   final String title;
 
-  const _ErrorTitle({super.key, required this.title});
+  const _SearchListErrorTitle({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -92,10 +92,10 @@ class _ErrorTitle extends StatelessWidget {
   }
 }
 
-class _ErrorRetryButton extends StatelessWidget {
+class _SearchListErrorRetryButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const _ErrorRetryButton({super.key, required this.onPressed});
+  const _SearchListErrorRetryButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
